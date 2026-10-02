@@ -1,20 +1,26 @@
-```javascript
 "use strict";
 
 /* =========================================================
    LoL Draft Simulator
+   iPad / Safari compatible
 ========================================================= */
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", function () {
+
+    console.log("LoL Draft Simulator 시작");
 
     /* =====================================================
-       DOM
+       DOM HELPER
     ===================================================== */
 
-    const $ = (id) => document.getElementById(id);
+    function $(id) {
+        return document.getElementById(id);
+    }
 
 
-    /* Setup */
+    /* =====================================================
+       SETUP DOM
+    ===================================================== */
 
     const setupScreen = $("setupScreen");
     const draftScreen = $("draftScreen");
@@ -35,19 +41,20 @@ document.addEventListener("DOMContentLoaded", () => {
     const startDraftButton = $("startDraft");
 
 
-    /* Series */
+    /* =====================================================
+       SERIES
+    ===================================================== */
 
     const seriesButtons =
         document.querySelectorAll(".series-button");
 
-    const standardMode =
-        $("standardMode");
-
-    const fearlessMode =
-        $("fearlessMode");
+    const standardMode = $("standardMode");
+    const fearlessMode = $("fearlessMode");
 
 
-    /* Draft */
+    /* =====================================================
+       DRAFT DOM
+    ===================================================== */
 
     const phaseLabel = $("phaseLabel");
     const timerElement = $("timer");
@@ -56,128 +63,195 @@ document.addEventListener("DOMContentLoaded", () => {
     const turnSide = $("turnSide");
     const turnAction = $("turnAction");
 
-    const championSearch =
-        $("championSearch");
+    const championSearch = $("championSearch");
+    const roleFilter = $("roleFilter");
+    const championGrid = $("championGrid");
 
-    const roleFilter =
-        $("roleFilter");
+    const championBrowser = $("championBrowser");
 
-    const championGrid =
-        $("championGrid");
+    const lockPreview = $("lockPreview");
+    const previewImage = $("previewImage");
+    const previewName = $("previewName");
+    const previewRole = $("previewRole");
 
-    const lockPreview =
-        $("lockPreview");
+    const lockButton = $("lockButton");
+    const cancelButton = $("cancelButton");
 
-    const previewImage =
-        $("previewImage");
+    const blueBans = $("blueBans");
+    const redBans = $("redBans");
 
-    const previewName =
-        $("previewName");
+    const bluePicks = $("bluePicks");
+    const redPicks = $("redPicks");
 
-    const previewRole =
-        $("previewRole");
+    const blueFearlessBans = $("blueFearlessBans");
+    const redFearlessBans = $("redFearlessBans");
 
-    const lockButton =
-        $("lockButton");
+    const blueFearlessSlots = $("blueFearlessSlots");
+    const redFearlessSlots = $("redFearlessSlots");
 
-    const cancelButton =
-        $("cancelButton");
+    const fearlessWarning = $("fearlessWarning");
+    const fearlessCount = $("fearlessCount");
 
-    const blueBans =
-        $("blueBans");
+    const blueAction = $("blueAction");
+    const redAction = $("redAction");
 
-    const redBans =
-        $("redBans");
+    const draftMessage = $("draftMessage");
 
-    const bluePicks =
-        $("bluePicks");
-
-    const redPicks =
-        $("redPicks");
-
-    const blueFearlessBans =
-        $("blueFearlessBans");
-
-    const redFearlessBans =
-        $("redFearlessBans");
-
-    const blueFearlessSlots =
-        $("blueFearlessSlots");
-
-    const redFearlessSlots =
-        $("redFearlessSlots");
-
-    const fearlessWarning =
-        $("fearlessWarning");
-
-    const fearlessCount =
-        $("fearlessCount");
-
-    const blueAction =
-        $("blueAction");
-
-    const redAction =
-        $("redAction");
-
-    const draftMessage =
-        $("draftMessage");
-
-    const undoButton =
-        $("undoButton");
-
-    const resetButton =
-        $("resetButton");
+    const undoButton = $("undoButton");
+    const resetButton = $("resetButton");
 
 
-    /* Header */
+    /* =====================================================
+       HEADER
+    ===================================================== */
 
-    const blueHeaderName =
-        $("blueHeaderName");
+    const blueHeaderName = $("blueHeaderName");
+    const redHeaderName = $("redHeaderName");
 
-    const redHeaderName =
-        $("redHeaderName");
+    const bluePanelName = $("bluePanelName");
+    const redPanelName = $("redPanelName");
 
-    const bluePanelName =
-        $("bluePanelName");
-
-    const redPanelName =
-        $("redPanelName");
-
-    const blueHeaderLogo =
-        $("blueHeaderLogo");
-
-    const redHeaderLogo =
-        $("redHeaderLogo");
+    const blueHeaderLogo = $("blueHeaderLogo");
+    const redHeaderLogo = $("redHeaderLogo");
 
 
-    /* Final */
+    /* =====================================================
+       FINAL
+    ===================================================== */
 
-    const finalGameTitle =
-        $("finalGameTitle");
+    const finalGameTitle = $("finalGameTitle");
 
-    const finalBlueName =
-        $("finalBlueName");
+    const finalBlueName = $("finalBlueName");
+    const finalRedName = $("finalRedName");
 
-    const finalRedName =
-        $("finalRedName");
+    const finalBlueLogo = $("finalBlueLogo");
+    const finalRedLogo = $("finalRedLogo");
 
-    const finalBlueLogo =
-        $("finalBlueLogo");
+    const finalBluePicks = $("finalBluePicks");
+    const finalRedPicks = $("finalRedPicks");
 
-    const finalRedLogo =
-        $("finalRedLogo");
+    const nextGameArea = $("nextGameArea");
+    const nextGameButton = $("nextGameButton");
 
-    const finalBluePicks =
-        $("finalBluePicks");
 
-    const finalRedPicks =
-        $("finalRedPicks");
+    /* =====================================================
+       DOM CHECK
+    ===================================================== */
 
-    const nextGameArea =
-        $("nextGameArea");
+    const requiredElements = [
+        setupScreen,
+        draftScreen,
+        finalScreen,
 
-    const nextGameButton =
-        $("nextGameButton");
+        blueTeamNameInput,
+        redTeamNameInput,
+
+        blueLogoInput,
+        redLogoInput,
+
+        blueLogoPreview,
+        redLogoPreview,
+
+        blueLogoText,
+        redLogoText,
+
+        startDraftButton,
+
+        standardMode,
+        fearlessMode,
+
+        phaseLabel,
+        timerElement,
+        seriesLabel,
+
+        turnSide,
+        turnAction,
+
+        championSearch,
+        roleFilter,
+        championGrid,
+        championBrowser,
+
+        lockPreview,
+        previewImage,
+        previewName,
+        previewRole,
+
+        lockButton,
+        cancelButton,
+
+        blueBans,
+        redBans,
+
+        bluePicks,
+        redPicks,
+
+        blueFearlessBans,
+        redFearlessBans,
+
+        blueFearlessSlots,
+        redFearlessSlots,
+
+        fearlessWarning,
+        fearlessCount,
+
+        blueAction,
+        redAction,
+
+        draftMessage,
+
+        undoButton,
+        resetButton,
+
+        blueHeaderName,
+        redHeaderName,
+
+        bluePanelName,
+        redPanelName,
+
+        blueHeaderLogo,
+        redHeaderLogo,
+
+        finalGameTitle,
+        finalBlueName,
+        finalRedName,
+
+        finalBlueLogo,
+        finalRedLogo,
+
+        finalBluePicks,
+        finalRedPicks,
+
+        nextGameArea,
+        nextGameButton
+    ];
+
+
+    const missingElements =
+        requiredElements.filter(function (element) {
+            return !element;
+        });
+
+
+    if (missingElements.length > 0) {
+
+        console.error(
+            "HTML 요소 누락",
+            missingElements
+        );
+
+        alert(
+            "HTML과 app.js가 서로 맞지 않습니다."
+        );
+
+        return;
+    }
+
+
+    console.log(
+        "BO 버튼 개수:",
+        seriesButtons.length
+    );
 
 
     /* =====================================================
@@ -189,7 +263,6 @@ document.addEventListener("DOMContentLoaded", () => {
     let fearlessEnabled = false;
 
     let blueLogoData = null;
-
     let redLogoData = null;
 
     let champions = [];
@@ -199,7 +272,6 @@ document.addEventListener("DOMContentLoaded", () => {
     let selectedChampion = null;
 
     let timer = 30;
-
     let timerInterval = null;
 
     let history = [];
@@ -232,7 +304,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const DRAFT_ORDER = [
 
-        /* BAN 1 */
+        /* -------------------------
+           BAN PHASE 1
+        ------------------------- */
 
         { type: "ban", team: "blue" },
         { type: "ban", team: "red" },
@@ -244,7 +318,9 @@ document.addEventListener("DOMContentLoaded", () => {
         { type: "ban", team: "red" },
 
 
-        /* PICK 1 */
+        /* -------------------------
+           PICK PHASE 1
+        ------------------------- */
 
         { type: "pick", team: "blue" },
 
@@ -257,7 +333,9 @@ document.addEventListener("DOMContentLoaded", () => {
         { type: "pick", team: "red" },
 
 
-        /* BAN 2 */
+        /* -------------------------
+           BAN PHASE 2
+        ------------------------- */
 
         { type: "ban", team: "red" },
         { type: "ban", team: "blue" },
@@ -266,7 +344,9 @@ document.addEventListener("DOMContentLoaded", () => {
         { type: "ban", team: "blue" },
 
 
-        /* PICK 2 */
+        /* -------------------------
+           PICK PHASE 2
+        ------------------------- */
 
         { type: "pick", team: "red" },
 
@@ -278,101 +358,69 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =====================================================
-       CHECK DOM
+       SERIES BUTTONS
     ===================================================== */
 
-    const requiredElements = [
+    seriesButtons.forEach(function (button) {
 
-        setupScreen,
-        draftScreen,
-        finalScreen,
+        button.addEventListener("click", function (event) {
 
-        blueTeamNameInput,
-        redTeamNameInput,
+            event.preventDefault();
 
-        startDraftButton,
-
-        standardMode,
-        fearlessMode,
-
-        phaseLabel,
-        timerElement,
-
-        championSearch,
-        roleFilter,
-        championGrid,
-
-        lockPreview,
-        previewImage,
-        previewName,
-        previewRole,
-
-        lockButton,
-        cancelButton,
-
-        blueBans,
-        redBans,
-
-        bluePicks,
-        redPicks
-    ];
+            const value =
+                Number(
+                    button.getAttribute("data-series")
+                );
 
 
-    const missingElements =
-        requiredElements.filter(
-            element => !element
-        );
+            if (
+                value !== 1 &&
+                value !== 3 &&
+                value !== 5
+            ) {
+
+                console.error(
+                    "잘못된 BO 값:",
+                    value
+                );
+
+                return;
+            }
 
 
-    if (missingElements.length > 0) {
+            selectedSeries = value;
 
-        console.error(
-            "필요한 HTML 요소를 찾을 수 없습니다.",
-            missingElements
-        );
-
-        alert(
-            "HTML과 app.js의 연결에 문제가 있습니다.\n" +
-            "F12 → Console에서 오류를 확인해주세요."
-        );
-
-        return;
-    }
-
-
-    /* =====================================================
-       SERIES BUTTON
-    ===================================================== */
-
-    seriesButtons.forEach(button => {
-
-        button.addEventListener("click", () => {
 
             seriesButtons.forEach(
-                btn => btn.classList.remove("active")
+                function (btn) {
+
+                    btn.classList.remove(
+                        "active"
+                    );
+                }
             );
+
 
             button.classList.add("active");
 
-            selectedSeries =
-                Number(button.dataset.series);
 
             console.log(
-                "선택된 시리즈:",
+                "현재 BO:",
                 selectedSeries
             );
         });
-
     });
 
 
     /* =====================================================
-       STANDARD
+       STANDARD MODE
     ===================================================== */
 
     standardMode.addEventListener(
         "click",
-        () => {
+        function (event) {
+
+            event.preventDefault();
 
             fearlessEnabled = false;
 
@@ -384,6 +432,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 "active"
             );
 
+
             console.log(
                 "Draft Mode: STANDARD"
             );
@@ -392,12 +441,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =====================================================
-       FEARLESS
+       FEARLESS MODE
     ===================================================== */
 
     fearlessMode.addEventListener(
         "click",
-        () => {
+        function (event) {
+
+            event.preventDefault();
 
             fearlessEnabled = true;
 
@@ -409,6 +460,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 "active"
             );
 
+
             console.log(
                 "Draft Mode: FEARLESS"
             );
@@ -417,35 +469,46 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =====================================================
-       LOGO
+       LOGO UPLOAD
     ===================================================== */
 
     blueLogoInput.addEventListener(
         "change",
-        () => {
+        function () {
 
             const file =
+                blueLogoInput.files &&
                 blueLogoInput.files[0];
 
-            if (!file) return;
+
+            if (!file) {
+                return;
+            }
+
 
             const reader =
                 new FileReader();
 
-            reader.onload = (event) => {
 
-                blueLogoData =
-                    event.target.result;
+            reader.onload =
+                function (event) {
 
-                blueLogoPreview.src =
-                    blueLogoData;
+                    blueLogoData =
+                        event.target.result;
 
-                blueLogoPreview.hidden =
-                    false;
 
-                blueLogoText.textContent =
-                    file.name;
-            };
+                    blueLogoPreview.src =
+                        blueLogoData;
+
+
+                    blueLogoPreview.hidden =
+                        false;
+
+
+                    blueLogoText.textContent =
+                        file.name;
+                };
+
 
             reader.readAsDataURL(file);
         }
@@ -454,30 +517,41 @@ document.addEventListener("DOMContentLoaded", () => {
 
     redLogoInput.addEventListener(
         "change",
-        () => {
+        function () {
 
             const file =
+                redLogoInput.files &&
                 redLogoInput.files[0];
 
-            if (!file) return;
+
+            if (!file) {
+                return;
+            }
+
 
             const reader =
                 new FileReader();
 
-            reader.onload = (event) => {
 
-                redLogoData =
-                    event.target.result;
+            reader.onload =
+                function (event) {
 
-                redLogoPreview.src =
-                    redLogoData;
+                    redLogoData =
+                        event.target.result;
 
-                redLogoPreview.hidden =
-                    false;
 
-                redLogoText.textContent =
-                    file.name;
-            };
+                    redLogoPreview.src =
+                        redLogoData;
+
+
+                    redLogoPreview.hidden =
+                        false;
+
+
+                    redLogoText.textContent =
+                        file.name;
+                };
+
 
             reader.readAsDataURL(file);
         }
@@ -490,11 +564,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
     startDraftButton.addEventListener(
         "click",
-        () => {
+        function (event) {
+
+            event.preventDefault();
+
 
             console.log(
                 "DRAFT START 클릭"
             );
+
+
+            console.log(
+                "선택된 BO:",
+                selectedSeries
+            );
+
+
+            console.log(
+                "선택된 모드:",
+                fearlessEnabled
+                    ? "FEARLESS"
+                    : "STANDARD"
+            );
+
 
             seriesState = {
 
@@ -620,8 +712,14 @@ document.addEventListener("DOMContentLoaded", () => {
         );
 
 
+        championBrowser.classList.remove(
+            "hidden"
+        );
+
+
         seriesLabel.textContent =
-            `GAME ${seriesState.currentGame}`;
+            "GAME " +
+            seriesState.currentGame;
 
 
         renderAll();
@@ -636,6 +734,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function currentStep() {
 
+        if (!gameState) {
+            return null;
+        }
+
+
         return DRAFT_ORDER[
             gameState.step
         ];
@@ -648,10 +751,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function getFearlessIds() {
 
-        if (!seriesState.fearless) {
+        if (
+            !seriesState.fearless
+        ) {
 
             return new Set();
         }
+
 
         return new Set(
             seriesState.previousPickedIds
@@ -660,7 +766,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =====================================================
-       SELECTED CHAMPIONS
+       SELECTED IDS
     ===================================================== */
 
     function getSelectedIds() {
@@ -669,24 +775,56 @@ document.addEventListener("DOMContentLoaded", () => {
             new Set();
 
 
+        if (!gameState) {
+            return ids;
+        }
+
+
         gameState.blueBans.forEach(
-            champion => ids.add(champion.id)
+            function (champion) {
+
+                ids.add(
+                    champion.id
+                );
+            }
         );
+
 
         gameState.redBans.forEach(
-            champion => ids.add(champion.id)
+            function (champion) {
+
+                ids.add(
+                    champion.id
+                );
+            }
         );
+
 
         gameState.bluePicks.forEach(
-            champion => ids.add(champion.id)
+            function (champion) {
+
+                ids.add(
+                    champion.id
+                );
+            }
         );
+
 
         gameState.redPicks.forEach(
-            champion => ids.add(champion.id)
+            function (champion) {
+
+                ids.add(
+                    champion.id
+                );
+            }
         );
 
+
         getFearlessIds().forEach(
-            id => ids.add(id)
+            function (id) {
+
+                ids.add(id);
+            }
         );
 
 
@@ -725,13 +863,32 @@ document.addEventListener("DOMContentLoaded", () => {
                 await versionResponse.json();
 
 
+            if (
+                !versions ||
+                !versions.length
+            ) {
+
+                throw new Error(
+                    "Data Dragon 버전 데이터가 없습니다."
+                );
+            }
+
+
             latestVersion =
                 versions[0];
 
 
+            console.log(
+                "Data Dragon:",
+                latestVersion
+            );
+
+
             const championResponse =
                 await fetch(
-                    `https://ddragon.leagueoflegends.com/cdn/${latestVersion}/data/ko_KR/champion.json`
+                    "https://ddragon.leagueoflegends.com/cdn/" +
+                    latestVersion +
+                    "/data/ko_KR/champion.json"
                 );
 
 
@@ -749,12 +906,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
             champions =
                 Object.values(
-                    data.data
+                    data.data || {}
                 );
 
 
             console.log(
-                `챔피언 ${champions.length}명 로딩 완료`
+                "챔피언 로딩 완료:",
+                champions.length
             );
 
 
@@ -805,6 +963,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function renderChampions() {
 
+        if (!championGrid) {
+            return;
+        }
+
+
         if (!champions.length) {
 
             championGrid.innerHTML = `
@@ -836,29 +999,38 @@ document.addEventListener("DOMContentLoaded", () => {
             getSelectedIds();
 
 
-        championGrid.innerHTML = "";
+        championGrid.innerHTML =
+            "";
 
 
         const filtered =
             champions.filter(
-                champion => {
+                function (champion) {
+
+                    const name =
+                        String(
+                            champion.name || ""
+                        ).toLowerCase();
+
+
+                    const id =
+                        String(
+                            champion.id || ""
+                        ).toLowerCase();
+
 
                     const nameMatch =
-                        champion.name
-                            .toLowerCase()
-                            .includes(keyword)
-                        ||
-                        champion.id
-                            .toLowerCase()
-                            .includes(keyword);
+                        name.includes(keyword) ||
+                        id.includes(keyword);
+
+
+                    const tags =
+                        champion.tags || [];
 
 
                     const roleMatch =
-                        role === "all"
-                        ||
-                        champion.tags.includes(
-                            role
-                        );
+                        role === "all" ||
+                        tags.includes(role);
 
 
                     return (
@@ -870,7 +1042,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
         filtered.forEach(
-            champion => {
+            function (champion) {
 
                 const element =
                     document.createElement(
@@ -900,7 +1072,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     element.addEventListener(
                         "click",
-                        () => {
+                        function () {
+
                             previewChampion(
                                 champion
                             );
@@ -910,20 +1083,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
                 element.innerHTML = `
-
                     <div class="champion-image">
-
                         <img
                             src="${getChampionImage(champion)}"
                             alt="${champion.name}"
                         >
-
                     </div>
 
                     <div class="champion-name">
                         ${champion.name}
                     </div>
-
                 `;
 
 
@@ -944,16 +1113,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function previewChampion(champion) {
 
-        if (!gameState) return;
+        if (!gameState) {
+            return;
+        }
 
-        if (gameState.locked) return;
+
+        if (gameState.locked) {
+            return;
+        }
 
 
         const step =
             currentStep();
 
 
-        if (!step) return;
+        if (!step) {
+            return;
+        }
 
 
         if (
@@ -973,11 +1149,13 @@ document.addEventListener("DOMContentLoaded", () => {
         previewImage.src =
             getChampionImage(champion);
 
+
         previewName.textContent =
             champion.name;
 
+
         previewRole.textContent =
-            champion.tags.join(" / ");
+            (champion.tags || []).join(" / ");
 
 
         lockPreview.classList.remove(
@@ -985,8 +1163,9 @@ document.addEventListener("DOMContentLoaded", () => {
         );
 
 
-        championGrid.parentElement
-            .classList.add("hidden");
+        championBrowser.classList.add(
+            "hidden"
+        );
     }
 
 
@@ -996,31 +1175,37 @@ document.addEventListener("DOMContentLoaded", () => {
 
     cancelButton.addEventListener(
         "click",
-        () => {
+        function (event) {
 
-            selectedChampion =
-                null;
+            event.preventDefault();
+
+            selectedChampion = null;
 
             lockPreview.classList.add(
                 "hidden"
             );
 
-            championGrid.parentElement
-                .classList.remove("hidden");
+            championBrowser.classList.remove(
+                "hidden"
+            );
         }
     );
 
 
     /* =====================================================
-       LOCK
+       LOCK IN
     ===================================================== */
 
     lockButton.addEventListener(
         "click",
-        () => {
+        function (event) {
+
+            event.preventDefault();
+
 
             if (
                 !selectedChampion ||
+                !gameState ||
                 gameState.locked
             ) {
 
@@ -1032,7 +1217,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 currentStep();
 
 
-            if (!step) return;
+            if (!step) {
+                return;
+            }
 
 
             if (
@@ -1086,8 +1273,14 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
 
-            selectedChampion =
-                null;
+            console.log(
+                step.team,
+                step.type,
+                selectedChampion.name
+            );
+
+
+            selectedChampion = null;
 
 
             lockPreview.classList.add(
@@ -1095,8 +1288,9 @@ document.addEventListener("DOMContentLoaded", () => {
             );
 
 
-            championGrid.parentElement
-                .classList.remove("hidden");
+            championBrowser.classList.remove(
+                "hidden"
+            );
 
 
             gameState.step++;
@@ -1124,6 +1318,11 @@ document.addEventListener("DOMContentLoaded", () => {
     ===================================================== */
 
     function saveHistory() {
+
+        if (!gameState) {
+            return;
+        }
+
 
         history.push({
 
@@ -1154,7 +1353,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     undoButton.addEventListener(
         "click",
-        () => {
+        function (event) {
+
+            event.preventDefault();
+
 
             if (
                 history.length === 0
@@ -1190,8 +1392,7 @@ document.addEventListener("DOMContentLoaded", () => {
             };
 
 
-            selectedChampion =
-                null;
+            selectedChampion = null;
 
 
             lockPreview.classList.add(
@@ -1199,8 +1400,9 @@ document.addEventListener("DOMContentLoaded", () => {
             );
 
 
-            championGrid.parentElement
-                .classList.remove("hidden");
+            championBrowser.classList.remove(
+                "hidden"
+            );
 
 
             renderAll();
@@ -1226,11 +1428,16 @@ document.addEventListener("DOMContentLoaded", () => {
             timer;
 
 
+        timerElement.style.color =
+            "var(--gold)";
+
+
         timerInterval =
             setInterval(
-                () => {
+                function () {
 
                     timer--;
+
 
                     timerElement.textContent =
                         timer;
@@ -1268,7 +1475,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function stopTimer() {
 
         if (
-            timerInterval
+            timerInterval !== null
         ) {
 
             clearInterval(
@@ -1286,16 +1493,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function autoPick() {
 
+        if (!gameState) {
+            return;
+        }
+
+
         const unavailable =
             getSelectedIds();
 
 
         const available =
             champions.filter(
-                champion =>
-                    !unavailable.has(
+                function (champion) {
+
+                    return !unavailable.has(
                         champion.id
-                    )
+                    );
+                }
             );
 
 
@@ -1330,6 +1544,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function renderAll() {
 
+        if (!gameState) {
+            return;
+        }
+
+
         renderBans();
 
         renderPicks();
@@ -1349,7 +1568,6 @@ document.addEventListener("DOMContentLoaded", () => {
     function renderBans() {
 
         blueBans.innerHTML = "";
-
         redBans.innerHTML = "";
 
 
@@ -1363,6 +1581,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 blueBans,
                 gameState.blueBans[i]
             );
+
 
             createBanSlot(
                 redBans,
@@ -1411,7 +1630,6 @@ document.addEventListener("DOMContentLoaded", () => {
     function renderPicks() {
 
         bluePicks.innerHTML = "";
-
         redPicks.innerHTML = "";
 
 
@@ -1426,6 +1644,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 gameState.bluePicks[i],
                 i + 1
             );
+
 
             createPickSlot(
                 redPicks,
@@ -1455,14 +1674,11 @@ document.addEventListener("DOMContentLoaded", () => {
         if (champion) {
 
             slot.innerHTML = `
-
                 <div class="pick-image">
-
                     <img
                         src="${getChampionImage(champion)}"
                         alt="${champion.name}"
                     >
-
                 </div>
 
                 <div class="pick-info">
@@ -1481,7 +1697,6 @@ document.addEventListener("DOMContentLoaded", () => {
         } else {
 
             slot.innerHTML = `
-
                 <div class="pick-image pick-empty">
                     ?
                 </div>
@@ -1585,15 +1800,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
         draftMessage.textContent =
-            `${isBlue
-                ? seriesState.blueTeam
-                : seriesState.redTeam
-            } ${step.type.toUpperCase()}`;
+            (
+                isBlue
+                    ? seriesState.blueTeam
+                    : seriesState.redTeam
+            ) +
+            " " +
+            step.type.toUpperCase();
     }
 
 
     /* =====================================================
-       FEARLESS
+       FEARLESS DISPLAY
     ===================================================== */
 
     function renderFearlessBans() {
@@ -1655,22 +1873,26 @@ document.addEventListener("DOMContentLoaded", () => {
         );
 
 
-        blueFearlessSlots.innerHTML = "";
+        blueFearlessSlots.innerHTML =
+            "";
 
-        redFearlessSlots.innerHTML = "";
+        redFearlessSlots.innerHTML =
+            "";
 
 
         const fearlessChampions =
             champions.filter(
-                champion =>
-                    ids.has(
+                function (champion) {
+
+                    return ids.has(
                         champion.id
-                    )
+                    );
+                }
             );
 
 
         fearlessChampions.forEach(
-            champion => {
+            function (champion) {
 
                 const blueSlot =
                     document.createElement(
@@ -1699,6 +1921,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     blueSlot
                 );
 
+
                 redFearlessSlots.appendChild(
                     redSlot
                 );
@@ -1707,7 +1930,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
         fearlessCount.textContent =
-            `${ids.size} champions unavailable`;
+            ids.size +
+            " champions unavailable";
     }
 
 
@@ -1717,7 +1941,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     championSearch.addEventListener(
         "input",
-        () => {
+        function () {
+
             renderChampions();
         }
     );
@@ -1725,19 +1950,28 @@ document.addEventListener("DOMContentLoaded", () => {
 
     roleFilter.addEventListener(
         "change",
-        () => {
+        function () {
+
             renderChampions();
         }
     );
 
 
     /* =====================================================
-       RESET
+       RESET CURRENT GAME
     ===================================================== */
 
     resetButton.addEventListener(
         "click",
-        () => {
+        function (event) {
+
+            event.preventDefault();
+
+
+            if (!seriesState) {
+                return;
+            }
+
 
             startGame();
         }
@@ -1757,32 +1991,38 @@ document.addEventListener("DOMContentLoaded", () => {
             true;
 
 
+        /* -------------------------
+           FEARLESS
+        ------------------------- */
+
         if (
             seriesState.fearless
         ) {
 
             gameState.bluePicks.forEach(
-                champion => {
+                function (champion) {
 
-                    seriesState.previousPickedIds
-                        .add(
-                            champion.id
-                        );
+                    seriesState.previousPickedIds.add(
+                        champion.id
+                    );
                 }
             );
 
 
             gameState.redPicks.forEach(
-                champion => {
+                function (champion) {
 
-                    seriesState.previousPickedIds
-                        .add(
-                            champion.id
-                        );
+                    seriesState.previousPickedIds.add(
+                        champion.id
+                    );
                 }
             );
         }
 
+
+        /* -------------------------
+           SAVE GAME
+        ------------------------- */
 
         seriesState.games.push({
 
@@ -1803,12 +2043,18 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
 
+        console.log(
+            "GAME COMPLETE:",
+            seriesState.currentGame
+        );
+
+
         showFinalScreen();
     }
 
 
     /* =====================================================
-       FINAL
+       FINAL SCREEN
     ===================================================== */
 
     function showFinalScreen() {
@@ -1823,11 +2069,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
         finalGameTitle.textContent =
-            `GAME ${seriesState.currentGame}`;
+            "GAME " +
+            seriesState.currentGame;
 
 
         finalBlueName.textContent =
             seriesState.blueTeam;
+
 
         finalRedName.textContent =
             seriesState.redTeam;
@@ -1858,6 +2106,7 @@ document.addEventListener("DOMContentLoaded", () => {
             gameState.bluePicks
         );
 
+
         renderFinalPicks(
             finalRedPicks,
             gameState.redPicks
@@ -1873,8 +2122,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 "hidden"
             );
 
+
             nextGameButton.textContent =
-                `GAME ${seriesState.currentGame + 1}`;
+                "GAME " +
+                (
+                    seriesState.currentGame +
+                    1
+                );
 
         } else {
 
@@ -1882,22 +2136,28 @@ document.addEventListener("DOMContentLoaded", () => {
                 "hidden"
             );
 
+
             nextGameButton.textContent =
                 "SERIES COMPLETE";
         }
     }
 
 
+    /* =====================================================
+       FINAL PICKS
+    ===================================================== */
+
     function renderFinalPicks(
         container,
         picks
     ) {
 
-        container.innerHTML = "";
+        container.innerHTML =
+            "";
 
 
         picks.forEach(
-            champion => {
+            function (champion) {
 
                 const element =
                     document.createElement(
@@ -1910,7 +2170,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
                 element.innerHTML = `
-
                     <img
                         src="${getChampionImage(champion)}"
                         alt="${champion.name}"
@@ -1936,7 +2195,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     nextGameButton.addEventListener(
         "click",
-        () => {
+        function (event) {
+
+            event.preventDefault();
+
 
             if (
                 seriesState.currentGame <
@@ -1950,6 +2212,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     "hidden"
                 );
 
+
                 draftScreen.classList.remove(
                     "hidden"
                 );
@@ -1957,16 +2220,79 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 startGame();
 
+
                 return;
             }
+
+
+            stopTimer();
 
 
             finalScreen.classList.add(
                 "hidden"
             );
 
+
             setupScreen.classList.remove(
                 "hidden"
+            );
+
+
+            /* 다음 시리즈를 위해 초기화 */
+
+            selectedSeries = 1;
+
+            fearlessEnabled = false;
+
+            seriesState = {
+
+                blueTeam: "BLUE TEAM",
+
+                redTeam: "RED TEAM",
+
+                bestOf: 1,
+
+                fearless: false,
+
+                currentGame: 1,
+
+                games: [],
+
+                previousPickedIds:
+                    new Set()
+            };
+
+
+            seriesButtons.forEach(
+                function (button) {
+
+                    button.classList.remove(
+                        "active"
+                    );
+
+
+                    if (
+                        Number(
+                            button.getAttribute(
+                                "data-series"
+                            )
+                        ) === 1
+                    ) {
+
+                        button.classList.add(
+                            "active"
+                        );
+                    }
+                }
+            );
+
+
+            standardMode.classList.add(
+                "active"
+            );
+
+            fearlessMode.classList.remove(
+                "active"
             );
         }
     );
@@ -1978,7 +2304,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.addEventListener(
         "keydown",
-        (event) => {
+        function (event) {
 
             if (
                 event.key === "Escape"
@@ -2013,15 +2339,55 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =====================================================
-       INITIALIZE
+       INITIAL STATE
     ===================================================== */
 
-    console.log(
-        "LoL Draft Simulator 초기화 완료"
+    seriesButtons.forEach(
+        function (button) {
+
+            const value =
+                Number(
+                    button.getAttribute(
+                        "data-series"
+                    )
+                );
+
+
+            if (value === 1) {
+
+                button.classList.add(
+                    "active"
+                );
+
+            } else {
+
+                button.classList.remove(
+                    "active"
+                );
+            }
+        }
     );
 
+
+    standardMode.classList.add(
+        "active"
+    );
+
+    fearlessMode.classList.remove(
+        "active"
+    );
+
+
+    console.log(
+        "초기 설정:",
+        "BO1 / STANDARD"
+    );
+
+
+    /* =====================================================
+       LOAD CHAMPIONS
+    ===================================================== */
 
     loadChampionData();
 
 });
-```
