@@ -1,0 +1,184 @@
+```html
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>League of Legends - Draft</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="draft">
+
+    <!-- =========================
+         TOP
+    ========================== -->
+
+    <header class="top">
+
+        <div class="team-name blue-name">
+            BLUE SIDE
+        </div>
+
+        <div class="match-info">
+
+            <div class="game-title">
+                CHAMPION SELECT
+            </div>
+
+            <div id="phase">
+                BAN PHASE
+            </div>
+
+            <div id="timer">
+                30
+            </div>
+
+        </div>
+
+        <div class="team-name red-name">
+            RED SIDE
+        </div>
+
+    </header>
+
+
+    <!-- =========================
+         TEAM AREA
+    ========================== -->
+
+    <section class="teams">
+
+        <!-- BLUE -->
+
+        <div class="team blue-team">
+
+            <div class="team-header">
+                <span>BLUE</span>
+                <span id="blueStatus">BAN</span>
+            </div>
+
+            <div class="ban-row">
+
+                <div class="ban-title">
+                    BANS
+                </div>
+
+                <div
+                    id="blueBans"
+                    class="ban-slots"
+                ></div>
+
+            </div>
+
+            <div
+                id="bluePlayers"
+                class="players"
+            ></div>
+
+        </div>
+
+
+        <!-- CENTER -->
+
+        <div class="center-area">
+
+            <div class="turn-indicator">
+                <span id="turnTeam">
+                    BLUE
+                </span>
+
+                <span id="turnAction">
+                    BAN
+                </span>
+            </div>
+
+            <div class="search">
+
+                <input
+                    id="search"
+                    type="text"
+                    placeholder="챔피언 검색"
+                    autocomplete="off"
+                >
+
+            </div>
+
+            <div
+                id="champions"
+                class="champions"
+            ></div>
+
+        </div>
+
+
+        <!-- RED -->
+
+        <div class="team red-team">
+
+            <div class="team-header">
+                <span>RED</span>
+                <span id="redStatus">BAN</span>
+            </div>
+
+            <div class="ban-row">
+
+                <div class="ban-title">
+                    BANS
+                </div>
+
+                <div
+                    id="redBans"
+                    class="ban-slots"
+                ></div>
+
+            </div>
+
+            <div
+                id="redPlayers"
+                class="players"
+            ></div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         BOTTOM
+    ========================== -->
+
+    <footer class="bottom">
+
+        <button id="undo">
+            UNDO
+        </button>
+
+        <button id="reset">
+            RESET
+        </button>
+
+        <div
+            id="message"
+            class="message"
+        >
+            BLUE SIDE BAN
+        </div>
+
+    </footer>
+
+</div>
+
+
+<script src="script.js"></script>
+
+</body>
+</html>
+```
