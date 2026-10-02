@@ -1,834 +1,1462 @@
 ```javascript
-/* =========================================================
-   LoL DRAFT SIMULATOR
-   GitHub Pages compatible
-========================================================= */
-
+"use strict";
 
 /* =========================================================
-   DOM
+   LoL Draft Simulator
 ========================================================= */
 
-const $ = id => document.getElementById(id);
+document.addEventListener("DOMContentLoaded", () => {
 
+    /* =====================================================
+       DOM
+    ===================================================== */
 
-/* SETUP */
+    const $ = (id) => document.getElementById(id);
 
-const setupScreen = $("setupScreen");
-const draftScreen = $("draftScreen");
-const finalScreen = $("finalScreen");
 
-const blueTeamNameInput = $("blueTeamName");
-const redTeamNameInput = $("redTeamName");
+    /* Setup */
 
-const blueLogoInput = $("blueLogo");
-const redLogoInput = $("redLogo");
+    const setupScreen = $("setupScreen");
+    const draftScreen = $("draftScreen");
+    const finalScreen = $("finalScreen");
 
-const blueLogoPreview = $("blueLogoPreview");
-const redLogoPreview = $("redLogoPreview");
+    const blueTeamNameInput = $("blueTeamName");
+    const redTeamNameInput = $("redTeamName");
 
-const startDraftButton = $("startDraft");
+    const blueLogoInput = $("blueLogo");
+    const redLogoInput = $("redLogo");
 
+    const blueLogoPreview = $("blueLogoPreview");
+    const redLogoPreview = $("redLogoPreview");
 
-/* DRAFT */
+    const blueLogoText = $("blueLogoText");
+    const redLogoText = $("redLogoText");
 
-const phaseLabel = $("phaseLabel");
-const timerElement = $("timer");
+    const startDraftButton = $("startDraft");
 
-const turnSide = $("turnSide");
-const turnAction = $("turnAction");
 
-const seriesLabel = $("seriesLabel");
+    /* Series */
 
-const championSearch = $("championSearch");
-const roleFilter = $("roleFilter");
-const championGrid = $("championGrid");
+    const seriesButtons =
+        document.querySelectorAll(".series-button");
 
-const lockPreview = $("lockPreview");
-const previewImage = $("previewImage");
-const previewName = $("previewName");
-const previewRole = $("previewRole");
+    const standardMode =
+        $("standardMode");
 
-const lockButton = $("lockButton");
-const cancelButton = $("cancelButton");
+    const fearlessMode =
+        $("fearlessMode");
 
-const blueBans = $("blueBans");
-const redBans = $("redBans");
 
-const bluePicks = $("bluePicks");
-const redPicks = $("redPicks");
+    /* Draft */
 
-const blueFearlessBans =
-    $("blueFearlessBans");
+    const phaseLabel = $("phaseLabel");
+    const timerElement = $("timer");
+    const seriesLabel = $("seriesLabel");
 
-const redFearlessBans =
-    $("redFearlessBans");
+    const turnSide = $("turnSide");
+    const turnAction = $("turnAction");
 
-const blueFearlessSlots =
-    $("blueFearlessSlots");
+    const championSearch =
+        $("championSearch");
 
-const redFearlessSlots =
-    $("redFearlessSlots");
+    const roleFilter =
+        $("roleFilter");
 
-const fearlessWarning =
-    $("fearlessWarning");
+    const championGrid =
+        $("championGrid");
 
-const fearlessCount =
-    $("fearlessCount");
+    const lockPreview =
+        $("lockPreview");
 
-const blueAction = $("blueAction");
-const redAction = $("redAction");
+    const previewImage =
+        $("previewImage");
 
-const draftMessage = $("draftMessage");
+    const previewName =
+        $("previewName");
 
-const undoButton = $("undoButton");
-const resetButton = $("resetButton");
+    const previewRole =
+        $("previewRole");
 
+    const lockButton =
+        $("lockButton");
 
-/* HEADER */
+    const cancelButton =
+        $("cancelButton");
 
-const blueHeaderName =
-    $("blueHeaderName");
+    const blueBans =
+        $("blueBans");
 
-const redHeaderName =
-    $("redHeaderName");
+    const redBans =
+        $("redBans");
 
-const bluePanelName =
-    $("bluePanelName");
+    const bluePicks =
+        $("bluePicks");
 
-const redPanelName =
-    $("redPanelName");
+    const redPicks =
+        $("redPicks");
 
-const blueHeaderLogo =
-    $("blueHeaderLogo");
+    const blueFearlessBans =
+        $("blueFearlessBans");
 
-const redHeaderLogo =
-    $("redHeaderLogo");
+    const redFearlessBans =
+        $("redFearlessBans");
 
+    const blueFearlessSlots =
+        $("blueFearlessSlots");
 
-/* FINAL */
+    const redFearlessSlots =
+        $("redFearlessSlots");
 
-const finalGameTitle =
-    $("finalGameTitle");
+    const fearlessWarning =
+        $("fearlessWarning");
 
-const finalBlueName =
-    $("finalBlueName");
+    const fearlessCount =
+        $("fearlessCount");
 
-const finalRedName =
-    $("finalRedName");
+    const blueAction =
+        $("blueAction");
 
-const finalBlueLogo =
-    $("finalBlueLogo");
+    const redAction =
+        $("redAction");
 
-const finalRedLogo =
-    $("finalRedLogo");
+    const draftMessage =
+        $("draftMessage");
 
-const finalBluePicks =
-    $("finalBluePicks");
+    const undoButton =
+        $("undoButton");
 
-const finalRedPicks =
-    $("finalRedPicks");
+    const resetButton =
+        $("resetButton");
 
-const nextGameArea =
-    $("nextGameArea");
 
-const nextGameButton =
-    $("nextGameButton");
+    /* Header */
 
+    const blueHeaderName =
+        $("blueHeaderName");
 
-/* =========================================================
-   DATA
-========================================================= */
+    const redHeaderName =
+        $("redHeaderName");
 
-let champions = [];
+    const bluePanelName =
+        $("bluePanelName");
 
-let latestVersion = "";
+    const redPanelName =
+        $("redPanelName");
 
-let selectedChampion = null;
+    const blueHeaderLogo =
+        $("blueHeaderLogo");
 
+    const redHeaderLogo =
+        $("redHeaderLogo");
 
-/* =========================================================
-   SETUP STATE
-========================================================= */
 
-let selectedSeries = 1;
+    /* Final */
 
-let fearlessEnabled = false;
+    const finalGameTitle =
+        $("finalGameTitle");
 
-let blueLogoData = null;
-let redLogoData = null;
+    const finalBlueName =
+        $("finalBlueName");
 
+    const finalRedName =
+        $("finalRedName");
 
-/* =========================================================
-   SERIES STATE
-========================================================= */
+    const finalBlueLogo =
+        $("finalBlueLogo");
 
-let seriesState = {
+    const finalRedLogo =
+        $("finalRedLogo");
 
-    blueTeam: "BLUE TEAM",
+    const finalBluePicks =
+        $("finalBluePicks");
 
-    redTeam: "RED TEAM",
+    const finalRedPicks =
+        $("finalRedPicks");
 
-    bestOf: 1,
+    const nextGameArea =
+        $("nextGameArea");
 
-    fearless: false,
+    const nextGameButton =
+        $("nextGameButton");
 
-    currentGame: 1,
 
-    games: [],
+    /* =====================================================
+       STATE
+    ===================================================== */
 
-    previousPickedIds: new Set()
-};
+    let selectedSeries = 1;
 
+    let fearlessEnabled = false;
 
-/* =========================================================
-   GAME STATE
-========================================================= */
+    let blueLogoData = null;
 
-let gameState = null;
+    let redLogoData = null;
 
-let history = [];
+    let champions = [];
 
-let timerInterval = null;
+    let latestVersion = "";
 
-let timer = 30;
+    let selectedChampion = null;
 
+    let timer = 30;
 
-/* =========================================================
-   DRAFT ORDER
-========================================================= */
+    let timerInterval = null;
 
-/*
+    let history = [];
 
-    Standard competitive Draft:
 
-    BAN PHASE 1
-    B R B R B R
+    let seriesState = {
 
-    PICK PHASE 1
-    B R R B B R
+        blueTeam: "BLUE TEAM",
 
-    BAN PHASE 2
-    R B R B
+        redTeam: "RED TEAM",
 
-    PICK PHASE 2
-    R B B R
+        bestOf: 1,
 
-    Total:
-    10 BANS
-    10 PICKS
+        fearless: false,
 
-*/
+        currentGame: 1,
 
-const DRAFT_ORDER = [
+        games: [],
 
-    /* BAN 1 */
+        previousPickedIds: new Set()
+    };
 
-    { type: "ban", team: "blue" },
-    { type: "ban", team: "red" },
-    { type: "ban", team: "blue" },
-    { type: "ban", team: "red" },
-    { type: "ban", team: "blue" },
-    { type: "ban", team: "red" },
 
+    let gameState = null;
 
-    /* PICK 1 */
 
-    { type: "pick", team: "blue" },
-    { type: "pick", team: "red" },
-    { type: "pick", team: "red" },
-    { type: "pick", team: "blue" },
-    { type: "pick", team: "blue" },
-    { type: "pick", team: "red" },
+    /* =====================================================
+       DRAFT ORDER
+    ===================================================== */
 
+    const DRAFT_ORDER = [
 
-    /* BAN 2 */
+        /* BAN 1 */
 
-    { type: "ban", team: "red" },
-    { type: "ban", team: "blue" },
-    { type: "ban", team: "red" },
-    { type: "ban", team: "blue" },
+        { type: "ban", team: "blue" },
+        { type: "ban", team: "red" },
 
+        { type: "ban", team: "blue" },
+        { type: "ban", team: "red" },
 
-    /* PICK 2 */
+        { type: "ban", team: "blue" },
+        { type: "ban", team: "red" },
 
-    { type: "pick", team: "red" },
-    { type: "pick", team: "blue" },
-    { type: "pick", team: "blue" },
-    { type: "pick", team: "red" }
-];
 
+        /* PICK 1 */
 
-/* =========================================================
-   AUDIO
-========================================================= */
+        { type: "pick", team: "blue" },
 
-let audioContext = null;
+        { type: "pick", team: "red" },
+        { type: "pick", team: "red" },
 
-function getAudioContext() {
+        { type: "pick", team: "blue" },
+        { type: "pick", team: "blue" },
 
-    if (!audioContext) {
+        { type: "pick", team: "red" },
 
-        audioContext =
-            new (
-                window.AudioContext ||
-                window.webkitAudioContext
-            )();
+
+        /* BAN 2 */
+
+        { type: "ban", team: "red" },
+        { type: "ban", team: "blue" },
+
+        { type: "ban", team: "red" },
+        { type: "ban", team: "blue" },
+
+
+        /* PICK 2 */
+
+        { type: "pick", team: "red" },
+
+        { type: "pick", team: "blue" },
+        { type: "pick", team: "blue" },
+
+        { type: "pick", team: "red" }
+    ];
+
+
+    /* =====================================================
+       CHECK DOM
+    ===================================================== */
+
+    const requiredElements = [
+
+        setupScreen,
+        draftScreen,
+        finalScreen,
+
+        blueTeamNameInput,
+        redTeamNameInput,
+
+        startDraftButton,
+
+        standardMode,
+        fearlessMode,
+
+        phaseLabel,
+        timerElement,
+
+        championSearch,
+        roleFilter,
+        championGrid,
+
+        lockPreview,
+        previewImage,
+        previewName,
+        previewRole,
+
+        lockButton,
+        cancelButton,
+
+        blueBans,
+        redBans,
+
+        bluePicks,
+        redPicks
+    ];
+
+
+    const missingElements =
+        requiredElements.filter(
+            element => !element
+        );
+
+
+    if (missingElements.length > 0) {
+
+        console.error(
+            "필요한 HTML 요소를 찾을 수 없습니다.",
+            missingElements
+        );
+
+        alert(
+            "HTML과 app.js의 연결에 문제가 있습니다.\n" +
+            "F12 → Console에서 오류를 확인해주세요."
+        );
+
+        return;
     }
 
-    return audioContext;
-}
 
+    /* =====================================================
+       SERIES BUTTON
+    ===================================================== */
 
-function playSound(
-    frequency = 500,
-    duration = 0.08
-) {
+    seriesButtons.forEach(button => {
 
-    try {
+        button.addEventListener("click", () => {
 
-        const ctx =
-            getAudioContext();
-
-        const oscillator =
-            ctx.createOscillator();
-
-        const gain =
-            ctx.createGain();
-
-        oscillator.frequency.value =
-            frequency;
-
-        oscillator.type =
-            "sine";
-
-        gain.gain.setValueAtTime(
-            0.04,
-            ctx.currentTime
-        );
-
-        gain.gain.exponentialRampToValueAtTime(
-            0.001,
-            ctx.currentTime + duration
-        );
-
-        oscillator.connect(gain);
-        gain.connect(ctx.destination);
-
-        oscillator.start();
-
-        oscillator.stop(
-            ctx.currentTime + duration
-        );
-
-    } catch (error) {
-        /* audio is optional */
-    }
-}
-
-
-/* =========================================================
-   DATA DRAGON
-========================================================= */
-
-async function loadChampionData() {
-
-    championGrid.innerHTML = `
-        <div style="
-            grid-column:1/-1;
-            text-align:center;
-            padding:50px;
-            color:#737d8b;
-        ">
-            챔피언 데이터를 불러오는 중...
-        </div>
-    `;
-
-    try {
-
-        const versionResponse =
-            await fetch(
-                "https://ddragon.leagueoflegends.com/api/versions.json"
+            seriesButtons.forEach(
+                btn => btn.classList.remove("active")
             );
 
-        const versions =
-            await versionResponse.json();
+            button.classList.add("active");
 
-        latestVersion =
-            versions[0];
+            selectedSeries =
+                Number(button.dataset.series);
 
-
-        const championResponse =
-            await fetch(
-                `https://ddragon.leagueoflegends.com/cdn/${latestVersion}/data/ko_KR/champion.json`
+            console.log(
+                "선택된 시리즈:",
+                selectedSeries
             );
+        });
 
-        const championData =
-            await championResponse.json();
-
-
-        champions =
-            Object.values(
-                championData.data
-            );
-
-
-        renderChampions();
-
-
-    } catch (error) {
-
-        console.error(error);
-
-        championGrid.innerHTML = `
-            <div style="
-                grid-column:1/-1;
-                text-align:center;
-                padding:50px;
-                color:#d85c64;
-            ">
-                챔피언 데이터를 불러오지 못했습니다.
-                <br>
-                인터넷 연결을 확인해주세요.
-            </div>
-        `;
-    }
-}
-
-
-/* =========================================================
-   CHAMPION IMAGE
-========================================================= */
-
-function getChampionImage(champion) {
-
-    return (
-        `https://ddragon.leagueoflegends.com/cdn/` +
-        `${latestVersion}/img/champion/` +
-        `${champion.image.full}`
-    );
-}
-
-
-/* =========================================================
-   SETUP BUTTONS
-========================================================= */
-
-document
-    .querySelectorAll(".series-button")
-    .forEach(button => {
-
-        button.addEventListener(
-            "click",
-            () => {
-
-                document
-                    .querySelectorAll(".series-button")
-                    .forEach(btn =>
-                        btn.classList.remove(
-                            "active"
-                        )
-                    );
-
-                button.classList.add(
-                    "active"
-                );
-
-                selectedSeries =
-                    Number(
-                        button.dataset.series
-                    );
-            }
-        );
     });
 
 
-$("standardMode")
-    .addEventListener(
+    /* =====================================================
+       STANDARD
+    ===================================================== */
+
+    standardMode.addEventListener(
         "click",
         () => {
 
             fearlessEnabled = false;
 
-            $("standardMode")
-                .classList.add("active");
+            standardMode.classList.add(
+                "active"
+            );
 
-            $("fearlessMode")
-                .classList.remove("active");
+            fearlessMode.classList.remove(
+                "active"
+            );
+
+            console.log(
+                "Draft Mode: STANDARD"
+            );
         }
     );
 
 
-$("fearlessMode")
-    .addEventListener(
+    /* =====================================================
+       FEARLESS
+    ===================================================== */
+
+    fearlessMode.addEventListener(
         "click",
         () => {
 
             fearlessEnabled = true;
 
-            $("fearlessMode")
-                .classList.add("active");
+            fearlessMode.classList.add(
+                "active"
+            );
 
-            $("standardMode")
-                .classList.remove("active");
+            standardMode.classList.remove(
+                "active"
+            );
+
+            console.log(
+                "Draft Mode: FEARLESS"
+            );
         }
     );
 
 
-/* =========================================================
-   LOGO UPLOAD
-========================================================= */
+    /* =====================================================
+       LOGO
+    ===================================================== */
 
-function setupLogoInput(
-    input,
-    preview,
-    textElement,
-    side
-) {
-
-    input.addEventListener(
+    blueLogoInput.addEventListener(
         "change",
         () => {
 
             const file =
-                input.files[0];
+                blueLogoInput.files[0];
 
-            if (!file) {
-                return;
-            }
-
+            if (!file) return;
 
             const reader =
                 new FileReader();
 
+            reader.onload = (event) => {
 
-            reader.onload =
-                event => {
+                blueLogoData =
+                    event.target.result;
 
-                    if (side === "blue") {
+                blueLogoPreview.src =
+                    blueLogoData;
 
-                        blueLogoData =
-                            event.target.result;
+                blueLogoPreview.hidden =
+                    false;
 
-                    } else {
-
-                        redLogoData =
-                            event.target.result;
-                    }
-
-
-                    preview.src =
-                        event.target.result;
-
-                    preview.hidden =
-                        false;
-
-                    textElement.textContent =
-                        file.name;
-                };
-
+                blueLogoText.textContent =
+                    file.name;
+            };
 
             reader.readAsDataURL(file);
         }
     );
-}
 
 
-setupLogoInput(
-    blueLogoInput,
-    blueLogoPreview,
-    $("blueLogoText"),
-    "blue"
-);
+    redLogoInput.addEventListener(
+        "change",
+        () => {
+
+            const file =
+                redLogoInput.files[0];
+
+            if (!file) return;
+
+            const reader =
+                new FileReader();
+
+            reader.onload = (event) => {
+
+                redLogoData =
+                    event.target.result;
+
+                redLogoPreview.src =
+                    redLogoData;
+
+                redLogoPreview.hidden =
+                    false;
+
+                redLogoText.textContent =
+                    file.name;
+            };
+
+            reader.readAsDataURL(file);
+        }
+    );
 
 
-setupLogoInput(
-    redLogoInput,
-    redLogoPreview,
-    $("redLogoText"),
-    "red"
-);
+    /* =====================================================
+       START DRAFT
+    ===================================================== */
+
+    startDraftButton.addEventListener(
+        "click",
+        () => {
+
+            console.log(
+                "DRAFT START 클릭"
+            );
+
+            seriesState = {
+
+                blueTeam:
+                    blueTeamNameInput.value.trim()
+                    || "BLUE TEAM",
+
+                redTeam:
+                    redTeamNameInput.value.trim()
+                    || "RED TEAM",
+
+                bestOf:
+                    selectedSeries,
+
+                fearless:
+                    fearlessEnabled,
+
+                currentGame: 1,
+
+                games: [],
+
+                previousPickedIds:
+                    new Set()
+            };
 
 
-/* =========================================================
-   START SERIES
-========================================================= */
+            updateTeamNames();
 
-startDraftButton.addEventListener(
-    "click",
-    () => {
 
-        seriesState = {
+            setupScreen.classList.add(
+                "hidden"
+            );
 
-            blueTeam:
-                blueTeamNameInput.value.trim()
-                || "BLUE TEAM",
+            draftScreen.classList.remove(
+                "hidden"
+            );
 
-            redTeam:
-                redTeamNameInput.value.trim()
-                || "RED TEAM",
+            finalScreen.classList.add(
+                "hidden"
+            );
 
-            bestOf:
-                selectedSeries,
 
-            fearless:
-                fearlessEnabled,
+            startGame();
+        }
+    );
 
-            currentGame: 1,
 
-            games: [],
+    /* =====================================================
+       TEAM NAMES
+    ===================================================== */
 
-            previousPickedIds:
-                new Set()
+    function updateTeamNames() {
+
+        blueHeaderName.textContent =
+            seriesState.blueTeam;
+
+        redHeaderName.textContent =
+            seriesState.redTeam;
+
+        bluePanelName.textContent =
+            seriesState.blueTeam;
+
+        redPanelName.textContent =
+            seriesState.redTeam;
+
+
+        if (blueLogoData) {
+
+            blueHeaderLogo.src =
+                blueLogoData;
+
+            blueHeaderLogo.hidden =
+                false;
+        }
+
+
+        if (redLogoData) {
+
+            redHeaderLogo.src =
+                redLogoData;
+
+            redHeaderLogo.hidden =
+                false;
+        }
+    }
+
+
+    /* =====================================================
+       START GAME
+    ===================================================== */
+
+    function startGame() {
+
+        console.log(
+            "GAME START:",
+            seriesState.currentGame
+        );
+
+
+        gameState = {
+
+            step: 0,
+
+            blueBans: [],
+
+            redBans: [],
+
+            bluePicks: [],
+
+            redPicks: [],
+
+            locked: false
         };
 
 
-        updateTeamNames();
+        history = [];
 
-        setupScreen.classList.add(
-            "hidden"
-        );
+        selectedChampion = null;
 
-        finalScreen.classList.add(
-            "hidden"
-        );
 
-        draftScreen.classList.remove(
+        lockPreview.classList.add(
             "hidden"
         );
 
 
-        startGame();
-    }
-);
+        seriesLabel.textContent =
+            `GAME ${seriesState.currentGame}`;
 
 
-/* =========================================================
-   TEAM NAMES
-========================================================= */
+        renderAll();
 
-function updateTeamNames() {
-
-    blueHeaderName.textContent =
-        seriesState.blueTeam;
-
-    redHeaderName.textContent =
-        seriesState.redTeam;
-
-    bluePanelName.textContent =
-        seriesState.blueTeam;
-
-    redPanelName.textContent =
-        seriesState.redTeam;
-
-
-    if (blueLogoData) {
-
-        blueHeaderLogo.src =
-            blueLogoData;
-
-        blueHeaderLogo.hidden =
-            false;
+        startTimer();
     }
 
 
-    if (redLogoData) {
+    /* =====================================================
+       CURRENT STEP
+    ===================================================== */
 
-        redHeaderLogo.src =
-            redLogoData;
+    function currentStep() {
 
-        redHeaderLogo.hidden =
-            false;
-    }
-}
-
-
-/* =========================================================
-   START GAME
-========================================================= */
-
-function startGame() {
-
-    gameState = {
-
-        step: 0,
-
-        blueBans: [],
-        redBans: [],
-
-        bluePicks: [],
-        redPicks: [],
-
-        locked: false
-    };
-
-
-    history = [];
-
-    selectedChampion = null;
-
-    lockPreview.classList.add(
-        "hidden"
-    );
-
-    championBrowserVisible(true);
-
-    seriesLabel.textContent =
-        `GAME ${seriesState.currentGame}`;
-
-
-    renderAll();
-
-    startTimer();
-}
-
-
-/* =========================================================
-   FEARLESS IDS
-========================================================= */
-
-function getFearlessIds() {
-
-    if (
-        !seriesState.fearless
-    ) {
-        return new Set();
+        return DRAFT_ORDER[
+            gameState.step
+        ];
     }
 
 
-    return new Set(
-        seriesState.previousPickedIds
-    );
-}
+    /* =====================================================
+       FEARLESS IDS
+    ===================================================== */
+
+    function getFearlessIds() {
+
+        if (!seriesState.fearless) {
+
+            return new Set();
+        }
+
+        return new Set(
+            seriesState.previousPickedIds
+        );
+    }
 
 
-/* =========================================================
-   CURRENT STEP
-========================================================= */
+    /* =====================================================
+       SELECTED CHAMPIONS
+    ===================================================== */
 
-function currentStep() {
+    function getSelectedIds() {
 
-    return DRAFT_ORDER[
-        gameState.step
-    ];
-}
+        const ids =
+            new Set();
 
 
-/* =========================================================
-   SELECTED IDS
-========================================================= */
+        gameState.blueBans.forEach(
+            champion => ids.add(champion.id)
+        );
 
-function getSelectedIds() {
+        gameState.redBans.forEach(
+            champion => ids.add(champion.id)
+        );
 
-    const ids = new Set();
+        gameState.bluePicks.forEach(
+            champion => ids.add(champion.id)
+        );
 
-    gameState.blueBans
-        .forEach(c => ids.add(c.id));
+        gameState.redPicks.forEach(
+            champion => ids.add(champion.id)
+        );
 
-    gameState.redBans
-        .forEach(c => ids.add(c.id));
-
-    gameState.bluePicks
-        .forEach(c => ids.add(c.id));
-
-    gameState.redPicks
-        .forEach(c => ids.add(c.id));
-
-    getFearlessIds()
-        .forEach(id => ids.add(id));
-
-    return ids;
-}
+        getFearlessIds().forEach(
+            id => ids.add(id)
+        );
 
 
-/* =========================================================
-   CHAMPION RENDER
-========================================================= */
-
-function renderChampions() {
-
-    const keyword =
-        championSearch.value
-            .trim()
-            .toLowerCase();
-
-    const role =
-        roleFilter.value;
-
-    const unavailable =
-        getSelectedIds();
+        return ids;
+    }
 
 
-    championGrid.innerHTML = "";
+    /* =====================================================
+       DATA DRAGON
+    ===================================================== */
+
+    async function loadChampionData() {
+
+        try {
+
+            console.log(
+                "챔피언 데이터 로딩..."
+            );
 
 
-    const filtered =
-        champions.filter(
+            const versionResponse =
+                await fetch(
+                    "https://ddragon.leagueoflegends.com/api/versions.json"
+                );
+
+
+            if (!versionResponse.ok) {
+
+                throw new Error(
+                    "Data Dragon 버전 요청 실패"
+                );
+            }
+
+
+            const versions =
+                await versionResponse.json();
+
+
+            latestVersion =
+                versions[0];
+
+
+            const championResponse =
+                await fetch(
+                    `https://ddragon.leagueoflegends.com/cdn/${latestVersion}/data/ko_KR/champion.json`
+                );
+
+
+            if (!championResponse.ok) {
+
+                throw new Error(
+                    "챔피언 데이터 요청 실패"
+                );
+            }
+
+
+            const data =
+                await championResponse.json();
+
+
+            champions =
+                Object.values(
+                    data.data
+                );
+
+
+            console.log(
+                `챔피언 ${champions.length}명 로딩 완료`
+            );
+
+
+            renderChampions();
+
+
+        } catch (error) {
+
+            console.error(
+                "챔피언 데이터 로딩 실패:",
+                error
+            );
+
+
+            championGrid.innerHTML = `
+                <div style="
+                    grid-column:1/-1;
+                    text-align:center;
+                    padding:40px;
+                    color:#ed4b58;
+                ">
+                    챔피언 데이터를 불러오지 못했습니다.<br>
+                    인터넷 연결 또는 Data Dragon 상태를 확인해주세요.
+                </div>
+            `;
+        }
+    }
+
+
+    /* =====================================================
+       CHAMPION IMAGE
+    ===================================================== */
+
+    function getChampionImage(champion) {
+
+        return (
+            "https://ddragon.leagueoflegends.com/cdn/" +
+            latestVersion +
+            "/img/champion/" +
+            champion.image.full
+        );
+    }
+
+
+    /* =====================================================
+       RENDER CHAMPIONS
+    ===================================================== */
+
+    function renderChampions() {
+
+        if (!champions.length) {
+
+            championGrid.innerHTML = `
+                <div style="
+                    grid-column:1/-1;
+                    text-align:center;
+                    padding:40px;
+                    color:#737d8b;
+                ">
+                    챔피언 데이터를 불러오는 중...
+                </div>
+            `;
+
+            return;
+        }
+
+
+        const keyword =
+            championSearch.value
+                .trim()
+                .toLowerCase();
+
+
+        const role =
+            roleFilter.value;
+
+
+        const unavailable =
+            getSelectedIds();
+
+
+        championGrid.innerHTML = "";
+
+
+        const filtered =
+            champions.filter(
+                champion => {
+
+                    const nameMatch =
+                        champion.name
+                            .toLowerCase()
+                            .includes(keyword)
+                        ||
+                        champion.id
+                            .toLowerCase()
+                            .includes(keyword);
+
+
+                    const roleMatch =
+                        role === "all"
+                        ||
+                        champion.tags.includes(
+                            role
+                        );
+
+
+                    return (
+                        nameMatch &&
+                        roleMatch
+                    );
+                }
+            );
+
+
+        filtered.forEach(
             champion => {
 
-                const matchesName =
-                    champion.name
-                        .toLowerCase()
-                        .includes(keyword)
-                    ||
-                    champion.id
-                        .toLowerCase()
-                        .includes(keyword);
-
-
-                const matchesRole =
-                    role === "all"
-                    ||
-                    champion.tags.includes(
-                        role
+                const element =
+                    document.createElement(
+                        "div"
                     );
 
 
-                return (
-                    matchesName &&
-                    matchesRole
+                element.className =
+                    "champion";
+
+
+                const unavailableChampion =
+                    unavailable.has(
+                        champion.id
+                    );
+
+
+                if (
+                    unavailableChampion
+                ) {
+
+                    element.classList.add(
+                        "unavailable"
+                    );
+
+                } else {
+
+                    element.addEventListener(
+                        "click",
+                        () => {
+                            previewChampion(
+                                champion
+                            );
+                        }
+                    );
+                }
+
+
+                element.innerHTML = `
+
+                    <div class="champion-image">
+
+                        <img
+                            src="${getChampionImage(champion)}"
+                            alt="${champion.name}"
+                        >
+
+                    </div>
+
+                    <div class="champion-name">
+                        ${champion.name}
+                    </div>
+
+                `;
+
+
+                championGrid.appendChild(
+                    element
                 );
             }
         );
 
 
-    filtered.forEach(
-        champion => {
-
-            const element =
-                document.createElement(
-                    "div"
-                );
+        updateFearlessDisplay();
+    }
 
 
-            element.className =
-                "champion";
+    /* =====================================================
+       PREVIEW
+    ===================================================== */
 
+    function previewChampion(champion) {
+
+        if (!gameState) return;
+
+        if (gameState.locked) return;
+
+
+        const step =
+            currentStep();
+
+
+        if (!step) return;
+
+
+        if (
+            getSelectedIds().has(
+                champion.id
+            )
+        ) {
+
+            return;
+        }
+
+
+        selectedChampion =
+            champion;
+
+
+        previewImage.src =
+            getChampionImage(champion);
+
+        previewName.textContent =
+            champion.name;
+
+        previewRole.textContent =
+            champion.tags.join(" / ");
+
+
+        lockPreview.classList.remove(
+            "hidden"
+        );
+
+
+        championGrid.parentElement
+            .classList.add("hidden");
+    }
+
+
+    /* =====================================================
+       CANCEL
+    ===================================================== */
+
+    cancelButton.addEventListener(
+        "click",
+        () => {
+
+            selectedChampion =
+                null;
+
+            lockPreview.classList.add(
+                "hidden"
+            );
+
+            championGrid.parentElement
+                .classList.remove("hidden");
+        }
+    );
+
+
+    /* =====================================================
+       LOCK
+    ===================================================== */
+
+    lockButton.addEventListener(
+        "click",
+        () => {
 
             if (
-                unavailable.has(
-                    champion.id
-                )
+                !selectedChampion ||
+                gameState.locked
             ) {
 
-                element.classList.add(
-                    "unavailable"
-                );
-
-            } else {
-
-                element.addEventListener(
-                    "click",
-                    () => previewChampion(
-                        champion
-                    )
-                );
+                return;
             }
 
 
-            element.innerHTML = `
+            const step =
+                currentStep();
 
-                <div class="champion-image">
+
+            if (!step) return;
+
+
+            if (
+                getSelectedIds().has(
+                    selectedChampion.id
+                )
+            ) {
+
+                return;
+            }
+
+
+            saveHistory();
+
+
+            if (
+                step.type === "ban"
+            ) {
+
+                if (
+                    step.team === "blue"
+                ) {
+
+                    gameState.blueBans.push(
+                        selectedChampion
+                    );
+
+                } else {
+
+                    gameState.redBans.push(
+                        selectedChampion
+                    );
+                }
+
+            } else {
+
+                if (
+                    step.team === "blue"
+                ) {
+
+                    gameState.bluePicks.push(
+                        selectedChampion
+                    );
+
+                } else {
+
+                    gameState.redPicks.push(
+                        selectedChampion
+                    );
+                }
+            }
+
+
+            selectedChampion =
+                null;
+
+
+            lockPreview.classList.add(
+                "hidden"
+            );
+
+
+            championGrid.parentElement
+                .classList.remove("hidden");
+
+
+            gameState.step++;
+
+
+            if (
+                gameState.step >=
+                DRAFT_ORDER.length
+            ) {
+
+                finishGame();
+
+            } else {
+
+                renderAll();
+
+                startTimer();
+            }
+        }
+    );
+
+
+    /* =====================================================
+       HISTORY
+    ===================================================== */
+
+    function saveHistory() {
+
+        history.push({
+
+            step:
+                gameState.step,
+
+            blueBans:
+                [...gameState.blueBans],
+
+            redBans:
+                [...gameState.redBans],
+
+            bluePicks:
+                [...gameState.bluePicks],
+
+            redPicks:
+                [...gameState.redPicks],
+
+            locked:
+                gameState.locked
+        });
+    }
+
+
+    /* =====================================================
+       UNDO
+    ===================================================== */
+
+    undoButton.addEventListener(
+        "click",
+        () => {
+
+            if (
+                history.length === 0
+            ) {
+
+                return;
+            }
+
+
+            const previous =
+                history.pop();
+
+
+            gameState = {
+
+                step:
+                    previous.step,
+
+                blueBans:
+                    [...previous.blueBans],
+
+                redBans:
+                    [...previous.redBans],
+
+                bluePicks:
+                    [...previous.bluePicks],
+
+                redPicks:
+                    [...previous.redPicks],
+
+                locked:
+                    previous.locked
+            };
+
+
+            selectedChampion =
+                null;
+
+
+            lockPreview.classList.add(
+                "hidden"
+            );
+
+
+            championGrid.parentElement
+                .classList.remove("hidden");
+
+
+            renderAll();
+
+            startTimer();
+        }
+    );
+
+
+    /* =====================================================
+       TIMER
+    ===================================================== */
+
+    function startTimer() {
+
+        stopTimer();
+
+
+        timer = 30;
+
+
+        timerElement.textContent =
+            timer;
+
+
+        timerInterval =
+            setInterval(
+                () => {
+
+                    timer--;
+
+                    timerElement.textContent =
+                        timer;
+
+
+                    if (
+                        timer <= 10
+                    ) {
+
+                        timerElement.style.color =
+                            "#ed4b58";
+
+                    } else {
+
+                        timerElement.style.color =
+                            "var(--gold)";
+                    }
+
+
+                    if (
+                        timer <= 0
+                    ) {
+
+                        stopTimer();
+
+                        autoPick();
+                    }
+
+                },
+                1000
+            );
+    }
+
+
+    function stopTimer() {
+
+        if (
+            timerInterval
+        ) {
+
+            clearInterval(
+                timerInterval
+            );
+
+            timerInterval = null;
+        }
+    }
+
+
+    /* =====================================================
+       AUTO PICK
+    ===================================================== */
+
+    function autoPick() {
+
+        const unavailable =
+            getSelectedIds();
+
+
+        const available =
+            champions.filter(
+                champion =>
+                    !unavailable.has(
+                        champion.id
+                    )
+            );
+
+
+        if (
+            available.length === 0
+        ) {
+
+            return;
+        }
+
+
+        const random =
+            available[
+                Math.floor(
+                    Math.random() *
+                    available.length
+                )
+            ];
+
+
+        selectedChampion =
+            random;
+
+
+        lockButton.click();
+    }
+
+
+    /* =====================================================
+       RENDER ALL
+    ===================================================== */
+
+    function renderAll() {
+
+        renderBans();
+
+        renderPicks();
+
+        renderChampions();
+
+        renderTurn();
+
+        renderFearlessBans();
+    }
+
+
+    /* =====================================================
+       BANS
+    ===================================================== */
+
+    function renderBans() {
+
+        blueBans.innerHTML = "";
+
+        redBans.innerHTML = "";
+
+
+        for (
+            let i = 0;
+            i < 5;
+            i++
+        ) {
+
+            createBanSlot(
+                blueBans,
+                gameState.blueBans[i]
+            );
+
+            createBanSlot(
+                redBans,
+                gameState.redBans[i]
+            );
+        }
+    }
+
+
+    function createBanSlot(
+        container,
+        champion
+    ) {
+
+        const slot =
+            document.createElement(
+                "div"
+            );
+
+
+        slot.className =
+            "ban-slot";
+
+
+        if (champion) {
+
+            slot.innerHTML = `
+                <img
+                    src="${getChampionImage(champion)}"
+                    alt="${champion.name}"
+                >
+            `;
+        }
+
+
+        container.appendChild(
+            slot
+        );
+    }
+
+
+    /* =====================================================
+       PICKS
+    ===================================================== */
+
+    function renderPicks() {
+
+        bluePicks.innerHTML = "";
+
+        redPicks.innerHTML = "";
+
+
+        for (
+            let i = 0;
+            i < 5;
+            i++
+        ) {
+
+            createPickSlot(
+                bluePicks,
+                gameState.bluePicks[i],
+                i + 1
+            );
+
+            createPickSlot(
+                redPicks,
+                gameState.redPicks[i],
+                i + 1
+            );
+        }
+    }
+
+
+    function createPickSlot(
+        container,
+        champion,
+        number
+    ) {
+
+        const slot =
+            document.createElement(
+                "div"
+            );
+
+
+        slot.className =
+            "pick-slot";
+
+
+        if (champion) {
+
+            slot.innerHTML = `
+
+                <div class="pick-image">
 
                     <img
                         src="${getChampionImage(champion)}"
@@ -837,935 +1465,327 @@ function renderChampions() {
 
                 </div>
 
-                <div class="champion-name">
-                    ${champion.name}
-                </div>
+                <div class="pick-info">
 
+                    <div class="pick-number">
+                        PLAYER ${number}
+                    </div>
+
+                    <div class="pick-name">
+                        ${champion.name}
+                    </div>
+
+                </div>
             `;
 
+        } else {
 
-            championGrid.appendChild(
-                element
-            );
-        }
-    );
+            slot.innerHTML = `
 
+                <div class="pick-image pick-empty">
+                    ?
+                </div>
 
-    updateFearlessDisplay();
-}
+                <div class="pick-info">
 
+                    <div class="pick-number">
+                        PLAYER ${number}
+                    </div>
 
-/* =========================================================
-   PREVIEW
-========================================================= */
+                    <div class="pick-name">
+                        NOT SELECTED
+                    </div>
 
-function previewChampion(
-    champion
-) {
-
-    if (
-        gameState.locked
-    ) {
-        return;
-    }
-
-
-    const step =
-        currentStep();
-
-
-    if (!step) {
-        return;
-    }
-
-
-    if (
-        getSelectedIds().has(
-            champion.id
-        )
-    ) {
-
-        return;
-    }
-
-
-    selectedChampion =
-        champion;
-
-
-    previewImage.src =
-        getChampionImage(champion);
-
-    previewName.textContent =
-        champion.name;
-
-    previewRole.textContent =
-        champion.tags.join(
-            " / "
-        );
-
-
-    lockPreview.classList.remove(
-        "hidden"
-    );
-
-
-    championBrowserVisible(
-        false
-    );
-
-
-    playSound(650, 0.06);
-}
-
-
-/* =========================================================
-   CANCEL PREVIEW
-========================================================= */
-
-cancelButton.addEventListener(
-    "click",
-    () => {
-
-        selectedChampion = null;
-
-        lockPreview.classList.add(
-            "hidden"
-        );
-
-        championBrowserVisible(
-            true
-        );
-    }
-);
-
-
-/* =========================================================
-   LOCK IN
-========================================================= */
-
-lockButton.addEventListener(
-    "click",
-    () => {
-
-        if (
-            !selectedChampion ||
-            gameState.locked
-        ) {
-
-            return;
+                </div>
+            `;
         }
 
+
+        container.appendChild(
+            slot
+        );
+    }
+
+
+    /* =====================================================
+       TURN
+    ===================================================== */
+
+    function renderTurn() {
 
         const step =
             currentStep();
 
 
         if (!step) {
-            return;
-        }
 
+            turnSide.textContent =
+                "DRAFT";
 
-        if (
-            getSelectedIds().has(
-                selectedChampion.id
-            )
-        ) {
+            turnAction.textContent =
+                "COMPLETE";
 
             return;
         }
 
 
-        saveHistory();
+        const isBlue =
+            step.team === "blue";
+
+
+        turnSide.textContent =
+            isBlue
+                ? seriesState.blueTeam
+                : seriesState.redTeam;
+
+
+        turnAction.textContent =
+            step.type === "ban"
+                ? "BAN"
+                : "PICK";
+
+
+        turnSide.style.color =
+            isBlue
+                ? "var(--blue-light)"
+                : "var(--red-light)";
+
+
+        blueAction.textContent =
+            isBlue
+                ? step.type.toUpperCase()
+                : "";
+
+
+        redAction.textContent =
+            !isBlue
+                ? step.type.toUpperCase()
+                : "";
+
+
+        const banCount =
+            gameState.blueBans.length +
+            gameState.redBans.length;
 
 
         if (
             step.type === "ban"
         ) {
 
-            if (
-                step.team === "blue"
-            ) {
-
-                gameState.blueBans.push(
-                    selectedChampion
-                );
-
-            } else {
-
-                gameState.redBans.push(
-                    selectedChampion
-                );
-            }
-
-
-            playSound(320, 0.12);
+            phaseLabel.textContent =
+                banCount < 6
+                    ? "BAN PHASE 1"
+                    : "BAN PHASE 2";
 
         } else {
 
-            if (
-                step.team === "blue"
-            ) {
-
-                gameState.bluePicks.push(
-                    selectedChampion
-                );
-
-            } else {
-
-                gameState.redPicks.push(
-                    selectedChampion
-                );
-            }
-
-
-            playSound(760, 0.12);
+            phaseLabel.textContent =
+                "PICK PHASE";
         }
 
 
-        selectedChampion = null;
-
-        lockPreview.classList.add(
-            "hidden"
-        );
-
-        championBrowserVisible(
-            true
-        );
-
-
-        gameState.step++;
-
-
-        if (
-            gameState.step >=
-            DRAFT_ORDER.length
-        ) {
-
-            finishGame();
-
-        } else {
-
-            startTimer();
-
-            renderAll();
-        }
+        draftMessage.textContent =
+            `${isBlue
+                ? seriesState.blueTeam
+                : seriesState.redTeam
+            } ${step.type.toUpperCase()}`;
     }
-);
 
 
-/* =========================================================
-   SAVE HISTORY
-========================================================= */
+    /* =====================================================
+       FEARLESS
+    ===================================================== */
 
-function saveHistory() {
-
-    history.push(
-        JSON.parse(
-            JSON.stringify(
-                gameState
-            )
-        )
-    );
-}
-
-
-/* =========================================================
-   UNDO
-========================================================= */
-
-undoButton.addEventListener(
-    "click",
-    () => {
+    function renderFearlessBans() {
 
         if (
-            history.length === 0
+            !seriesState.fearless
         ) {
+
+            blueFearlessBans.classList.add(
+                "hidden"
+            );
+
+            redFearlessBans.classList.add(
+                "hidden"
+            );
+
+            fearlessWarning.classList.add(
+                "hidden"
+            );
 
             return;
         }
 
 
-        gameState =
-            history.pop();
+        const ids =
+            getFearlessIds();
 
-
-        selectedChampion = null;
-
-
-        lockPreview.classList.add(
-            "hidden"
-        );
-
-
-        championBrowserVisible(
-            true
-        );
-
-
-        startTimer();
-
-        renderAll();
-
-        playSound(420, 0.08);
-    }
-);
-
-
-/* =========================================================
-   TIMER
-========================================================= */
-
-function startTimer() {
-
-    stopTimer();
-
-    timer = 30;
-
-    timerElement.textContent =
-        timer;
-
-
-    timerInterval =
-        setInterval(
-            () => {
-
-                timer--;
-
-                timerElement.textContent =
-                    timer;
-
-
-                if (
-                    timer <= 10
-                ) {
-
-                    timerElement.style.color =
-                        "#ed4b58";
-
-                } else {
-
-                    timerElement.style.color =
-                        "var(--gold)";
-                }
-
-
-                if (
-                    timer <= 0
-                ) {
-
-                    stopTimer();
-
-                    handleTimeOut();
-                }
-
-            },
-            1000
-        );
-}
-
-
-function stopTimer() {
-
-    if (
-        timerInterval
-    ) {
-
-        clearInterval(
-            timerInterval
-        );
-
-        timerInterval = null;
-    }
-}
-
-
-/* =========================================================
-   TIMEOUT
-========================================================= */
-
-function handleTimeOut() {
-
-    /*
-        실제 대회 서버의 자동 선택 규칙과는
-        별개인 시뮬레이터 기능이다.
-
-        여기서는 랜덤으로 사용 가능한 챔피언을
-        자동 선택한다.
-    */
-
-    const unavailable =
-        getSelectedIds();
-
-
-    const available =
-        champions.filter(
-            champion =>
-                !unavailable.has(
-                    champion.id
-                )
-        );
-
-
-    if (
-        available.length === 0
-    ) {
-
-        return;
-    }
-
-
-    const randomChampion =
-        available[
-            Math.floor(
-                Math.random() *
-                available.length
-            )
-        ];
-
-
-    previewChampion(
-        randomChampion
-    );
-
-
-    setTimeout(
-        () => {
-
-            lockButton.click();
-
-        },
-        400
-    );
-}
-
-
-/* =========================================================
-   RENDER ALL
-========================================================= */
-
-function renderAll() {
-
-    renderBans();
-
-    renderPicks();
-
-    renderChampions();
-
-    renderTurn();
-
-    updateTimerDisplay();
-}
-
-
-/* =========================================================
-   BANS
-========================================================= */
-
-function renderBans() {
-
-    blueBans.innerHTML = "";
-    redBans.innerHTML = "";
-
-    for (
-        let i = 0;
-        i < 5;
-        i++
-    ) {
-
-        createBanSlot(
-            blueBans,
-            gameState.blueBans[i]
-        );
-
-        createBanSlot(
-            redBans,
-            gameState.redBans[i]
-        );
-    }
-
-
-    renderFearlessBans();
-}
-
-
-function createBanSlot(
-    container,
-    champion
-) {
-
-    const slot =
-        document.createElement(
-            "div"
-        );
-
-    slot.className =
-        "ban-slot";
-
-
-    if (champion) {
-
-        slot.innerHTML = `
-            <img
-                src="${getChampionImage(champion)}"
-                alt="${champion.name}"
-            >
-        `;
-    }
-
-
-    container.appendChild(
-        slot
-    );
-}
-
-
-/* =========================================================
-   FEARLESS BANS
-========================================================= */
-
-function renderFearlessBans() {
-
-    if (
-        !seriesState.fearless
-    ) {
-
-        blueFearlessBans.classList.add(
-            "hidden"
-        );
-
-        redFearlessBans.classList.add(
-            "hidden"
-        );
-
-        return;
-    }
-
-
-    const fearless =
-        champions.filter(
-            champion =>
-                getFearlessIds().has(
-                    champion.id
-                )
-        );
-
-
-    if (
-        fearless.length === 0
-    ) {
-
-        blueFearlessBans.classList.add(
-            "hidden"
-        );
-
-        redFearlessBans.classList.add(
-            "hidden"
-        );
-
-        return;
-    }
-
-
-    blueFearlessBans.classList.remove(
-        "hidden"
-    );
-
-    redFearlessBans.classList.remove(
-        "hidden"
-    );
-
-
-    blueFearlessSlots.innerHTML = "";
-    redFearlessSlots.innerHTML = "";
-
-
-    fearless.forEach(
-        champion => {
-
-            const blueSlot =
-                document.createElement(
-                    "div"
-                );
-
-            blueSlot.className =
-                "ban-slot fearless-slot";
-
-            blueSlot.innerHTML = `
-                <img
-                    src="${getChampionImage(champion)}"
-                    alt="${champion.name}"
-                    title="${champion.name}"
-                >
-            `;
-
-
-            const redSlot =
-                blueSlot.cloneNode(
-                    true
-                );
-
-
-            blueFearlessSlots.appendChild(
-                blueSlot
-            );
-
-            redFearlessSlots.appendChild(
-                redSlot
-            );
-        }
-    );
-}
-
-
-/* =========================================================
-   PICKS
-========================================================= */
-
-function renderPicks() {
-
-    bluePicks.innerHTML = "";
-    redPicks.innerHTML = "";
-
-
-    for (
-        let i = 0;
-        i < 5;
-        i++
-    ) {
-
-        createPickSlot(
-            bluePicks,
-            gameState.bluePicks[i],
-            i + 1
-        );
-
-        createPickSlot(
-            redPicks,
-            gameState.redPicks[i],
-            i + 1
-        );
-    }
-}
-
-
-function createPickSlot(
-    container,
-    champion,
-    number
-) {
-
-    const slot =
-        document.createElement(
-            "div"
-        );
-
-    slot.className =
-        "pick-slot";
-
-
-    if (champion) {
-
-        slot.innerHTML = `
-
-            <div class="pick-image">
-
-                <img
-                    src="${getChampionImage(champion)}"
-                    alt="${champion.name}"
-                >
-
-            </div>
-
-            <div class="pick-info">
-
-                <div class="pick-number">
-                    PLAYER ${number}
-                </div>
-
-                <div class="pick-name">
-                    ${champion.name}
-                </div>
-
-            </div>
-
-        `;
-
-    } else {
-
-        slot.innerHTML = `
-
-            <div class="pick-image pick-empty">
-                ?
-            </div>
-
-            <div class="pick-info">
-
-                <div class="pick-number">
-                    PLAYER ${number}
-                </div>
-
-                <div class="pick-name">
-                    NOT SELECTED
-                </div>
-
-            </div>
-
-        `;
-    }
-
-
-    container.appendChild(
-        slot
-    );
-}
-
-
-/* =========================================================
-   TURN
-========================================================= */
-
-function renderTurn() {
-
-    if (
-        gameState.step >=
-        DRAFT_ORDER.length
-    ) {
-
-        turnSide.textContent =
-            "DRAFT";
-
-        turnAction.textContent =
-            "COMPLETE";
-
-        return;
-    }
-
-
-    const step =
-        currentStep();
-
-
-    const isBlue =
-        step.team === "blue";
-
-
-    turnSide.textContent =
-        isBlue
-            ? `${seriesState.blueTeam}`
-            : `${seriesState.redTeam}`;
-
-
-    turnAction.textContent =
-        step.type === "ban"
-            ? "BAN"
-            : "PICK";
-
-
-    turnSide.style.color =
-        isBlue
-            ? "var(--blue-light)"
-            : "var(--red-light)";
-
-
-    blueAction.textContent =
-        isBlue
-            ? step.type.toUpperCase()
-            : "";
-
-    redAction.textContent =
-        !isBlue
-            ? step.type.toUpperCase()
-            : "";
-
-
-    const banCount =
-        gameState.blueBans.length +
-        gameState.redBans.length;
-
-
-    if (
-        step.type === "ban"
-    ) {
 
         if (
-            banCount < 6
+            ids.size === 0
         ) {
 
-            phaseLabel.textContent =
-                "BAN PHASE 1";
+            blueFearlessBans.classList.add(
+                "hidden"
+            );
 
-        } else {
+            redFearlessBans.classList.add(
+                "hidden"
+            );
 
-            phaseLabel.textContent =
-                "BAN PHASE 2";
+            fearlessWarning.classList.add(
+                "hidden"
+            );
+
+            return;
         }
 
-    } else {
 
-        phaseLabel.textContent =
-            "PICK PHASE";
-    }
-
-
-    draftMessage.textContent =
-        `${isBlue
-            ? seriesState.blueTeam
-            : seriesState.redTeam}
-        ${step.type.toUpperCase()}`;
-}
-
-
-/* =========================================================
-   TIMER
-========================================================= */
-
-function updateTimerDisplay() {
-
-    timerElement.textContent =
-        timer;
-
-    timerElement.style.color =
-        timer <= 10
-            ? "var(--red-light)"
-            : "var(--gold)";
-}
-
-
-/* =========================================================
-   CHAMPION BROWSER
-========================================================= */
-
-function championBrowserVisible(
-    visible
-) {
-
-    const browser =
-        $("championBrowser");
-
-
-    if (visible) {
-
-        browser.classList.remove(
+        blueFearlessBans.classList.remove(
             "hidden"
         );
 
-    } else {
-
-        browser.classList.add(
-            "hidden"
-        );
-    }
-}
-
-
-/* =========================================================
-   FEARLESS DISPLAY
-========================================================= */
-
-function updateFearlessDisplay() {
-
-    if (
-        !seriesState.fearless
-    ) {
-
-        fearlessWarning.classList.add(
+        redFearlessBans.classList.remove(
             "hidden"
         );
 
-        return;
+        fearlessWarning.classList.remove(
+            "hidden"
+        );
+
+
+        blueFearlessSlots.innerHTML = "";
+
+        redFearlessSlots.innerHTML = "";
+
+
+        const fearlessChampions =
+            champions.filter(
+                champion =>
+                    ids.has(
+                        champion.id
+                    )
+            );
+
+
+        fearlessChampions.forEach(
+            champion => {
+
+                const blueSlot =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                blueSlot.className =
+                    "ban-slot fearless-slot";
+
+
+                blueSlot.innerHTML = `
+                    <img
+                        src="${getChampionImage(champion)}"
+                        title="${champion.name}"
+                        alt="${champion.name}"
+                    >
+                `;
+
+
+                const redSlot =
+                    blueSlot.cloneNode(true);
+
+
+                blueFearlessSlots.appendChild(
+                    blueSlot
+                );
+
+                redFearlessSlots.appendChild(
+                    redSlot
+                );
+            }
+        );
+
+
+        fearlessCount.textContent =
+            `${ids.size} champions unavailable`;
     }
 
 
-    const count =
-        getFearlessIds().size;
+    /* =====================================================
+       SEARCH
+    ===================================================== */
 
-
-    fearlessWarning.classList.remove(
-        "hidden"
+    championSearch.addEventListener(
+        "input",
+        () => {
+            renderChampions();
+        }
     );
 
 
-    fearlessCount.textContent =
-        `${count} champions unavailable`;
-}
+    roleFilter.addEventListener(
+        "change",
+        () => {
+            renderChampions();
+        }
+    );
 
 
-/* =========================================================
-   SEARCH
-========================================================= */
+    /* =====================================================
+       RESET
+    ===================================================== */
 
-championSearch.addEventListener(
-    "input",
-    renderChampions
-);
+    resetButton.addEventListener(
+        "click",
+        () => {
 
-
-roleFilter.addEventListener(
-    "change",
-    renderChampions
-);
+            startGame();
+        }
+    );
 
 
-/* =========================================================
-   RESET GAME
-========================================================= */
+    /* =====================================================
+       FINISH GAME
+    ===================================================== */
 
-resetButton.addEventListener(
-    "click",
-    () => {
+    function finishGame() {
 
         stopTimer();
 
-        startGame();
-    }
-);
+
+        gameState.locked =
+            true;
 
 
-/* =========================================================
-   FINISH GAME
-========================================================= */
+        if (
+            seriesState.fearless
+        ) {
 
-function finishGame() {
+            gameState.bluePicks.forEach(
+                champion => {
 
-    stopTimer();
-
-
-    gameState.locked = true;
-
-
-    /*
-        이번 게임의 모든 픽을
-        Fearless 누적 목록에 추가
-    */
-
-    if (
-        seriesState.fearless
-    ) {
-
-        gameState.bluePicks
-            .forEach(
-                champion =>
                     seriesState.previousPickedIds
                         .add(
                             champion.id
-                        )
+                        );
+                }
             );
 
 
-        gameState.redPicks
-            .forEach(
-                champion =>
+            gameState.redPicks.forEach(
+                champion => {
+
                     seriesState.previousPickedIds
                         .add(
                             champion.id
-                        )
+                        );
+                }
             );
-    }
+        }
 
 
-    seriesState.games.push(
-        {
+        seriesState.games.push({
+
             game:
                 seriesState.currentGame,
 
@@ -1780,199 +1800,166 @@ function finishGame() {
 
             redPicks:
                 [...gameState.redPicks]
-        }
-    );
+        });
 
 
-    showFinalScreen();
-
-
-    playSound(900, 0.25);
-}
-
-
-/* =========================================================
-   FINAL SCREEN
-========================================================= */
-
-function showFinalScreen() {
-
-    draftScreen.classList.add(
-        "hidden"
-    );
-
-    finalScreen.classList.remove(
-        "hidden"
-    );
-
-
-    finalGameTitle.textContent =
-        `GAME ${seriesState.currentGame}`;
-
-
-    finalBlueName.textContent =
-        seriesState.blueTeam;
-
-    finalRedName.textContent =
-        seriesState.redTeam;
-
-
-    if (blueLogoData) {
-
-        finalBlueLogo.src =
-            blueLogoData;
-
-        finalBlueLogo.hidden =
-            false;
+        showFinalScreen();
     }
 
 
-    if (redLogoData) {
+    /* =====================================================
+       FINAL
+    ===================================================== */
 
-        finalRedLogo.src =
-            redLogoData;
+    function showFinalScreen() {
 
-        finalRedLogo.hidden =
-            false;
-    }
-
-
-    renderFinalPicks(
-        finalBluePicks,
-        gameState.bluePicks
-    );
-
-    renderFinalPicks(
-        finalRedPicks,
-        gameState.redPicks
-    );
-
-
-    if (
-        seriesState.currentGame <
-        seriesState.bestOf
-    ) {
-
-        nextGameArea.classList.remove(
+        draftScreen.classList.add(
             "hidden"
         );
 
-        nextGameButton.textContent =
-            `GAME ${seriesState.currentGame + 1}`;
-    } else {
-
-        nextGameArea.classList.remove(
+        finalScreen.classList.remove(
             "hidden"
         );
 
-        nextGameButton.textContent =
-            "SERIES COMPLETE";
-    }
-}
+
+        finalGameTitle.textContent =
+            `GAME ${seriesState.currentGame}`;
 
 
-function renderFinalPicks(
-    container,
-    picks
-) {
+        finalBlueName.textContent =
+            seriesState.blueTeam;
 
-    container.innerHTML = "";
-
-
-    picks.forEach(
-        champion => {
-
-            const element =
-                document.createElement(
-                    "div"
-                );
-
-            element.className =
-                "final-pick";
+        finalRedName.textContent =
+            seriesState.redTeam;
 
 
-            element.innerHTML = `
+        if (blueLogoData) {
 
-                <img
-                    src="${getChampionImage(champion)}"
-                    alt="${champion.name}"
-                >
+            finalBlueLogo.src =
+                blueLogoData;
 
-                <span>
-                    ${champion.name}
-                </span>
-
-            `;
-
-
-            container.appendChild(
-                element
-            );
+            finalBlueLogo.hidden =
+                false;
         }
-    );
-}
 
 
-/* =========================================================
-   NEXT GAME
-========================================================= */
+        if (redLogoData) {
 
-nextGameButton.addEventListener(
-    "click",
-    () => {
+            finalRedLogo.src =
+                redLogoData;
+
+            finalRedLogo.hidden =
+                false;
+        }
+
+
+        renderFinalPicks(
+            finalBluePicks,
+            gameState.bluePicks
+        );
+
+        renderFinalPicks(
+            finalRedPicks,
+            gameState.redPicks
+        );
+
 
         if (
-            seriesState.currentGame >=
+            seriesState.currentGame <
             seriesState.bestOf
         ) {
 
-            finishSeries();
+            nextGameArea.classList.remove(
+                "hidden"
+            );
 
-            return;
+            nextGameButton.textContent =
+                `GAME ${seriesState.currentGame + 1}`;
+
+        } else {
+
+            nextGameArea.classList.remove(
+                "hidden"
+            );
+
+            nextGameButton.textContent =
+                "SERIES COMPLETE";
         }
-
-
-        seriesState.currentGame++;
-
-
-        finalScreen.classList.add(
-            "hidden"
-        );
-
-        draftScreen.classList.remove(
-            "hidden"
-        );
-
-
-        startGame();
     }
-);
 
 
-/* =========================================================
-   FINISH SERIES
-========================================================= */
+    function renderFinalPicks(
+        container,
+        picks
+    ) {
 
-function finishSeries() {
-
-    stopTimer();
-
-    alert(
-        `${seriesState.blueTeam} vs ${seriesState.redTeam}\n\n` +
-        `${seriesState.bestOf}경기 시리즈가 종료되었습니다.`
-    );
+        container.innerHTML = "";
 
 
-    finalGameTitle.textContent =
-        `SERIES COMPLETE — ${seriesState.games.length} GAMES`;
+        picks.forEach(
+            champion => {
+
+                const element =
+                    document.createElement(
+                        "div"
+                    );
 
 
-    nextGameButton.textContent =
-        "BACK TO SETUP";
+                element.className =
+                    "final-pick";
 
 
-    nextGameButton.onclick =
+                element.innerHTML = `
+
+                    <img
+                        src="${getChampionImage(champion)}"
+                        alt="${champion.name}"
+                    >
+
+                    <span>
+                        ${champion.name}
+                    </span>
+                `;
+
+
+                container.appendChild(
+                    element
+                );
+            }
+        );
+    }
+
+
+    /* =====================================================
+       NEXT GAME
+    ===================================================== */
+
+    nextGameButton.addEventListener(
+        "click",
         () => {
+
+            if (
+                seriesState.currentGame <
+                seriesState.bestOf
+            ) {
+
+                seriesState.currentGame++;
+
+
+                finalScreen.classList.add(
+                    "hidden"
+                );
+
+                draftScreen.classList.remove(
+                    "hidden"
+                );
+
+
+                startGame();
+
+                return;
+            }
+
 
             finalScreen.classList.add(
                 "hidden"
@@ -1981,53 +1968,60 @@ function finishSeries() {
             setupScreen.classList.remove(
                 "hidden"
             );
-        };
-}
+        }
+    );
 
 
-/* =========================================================
-   KEYBOARD
-========================================================= */
+    /* =====================================================
+       KEYBOARD
+    ===================================================== */
 
-document.addEventListener(
-    "keydown",
-    event => {
-
-        if (
-            event.key === "Escape"
-        ) {
+    document.addEventListener(
+        "keydown",
+        (event) => {
 
             if (
-                !lockPreview.classList.contains(
-                    "hidden"
-                )
+                event.key === "Escape"
             ) {
 
-                cancelButton.click();
+                if (
+                    !lockPreview.classList.contains(
+                        "hidden"
+                    )
+                ) {
+
+                    cancelButton.click();
+                }
             }
-        }
 
-
-        if (
-            event.key === "Enter"
-        ) {
 
             if (
-                !lockPreview.classList.contains(
-                    "hidden"
-                )
+                event.key === "Enter"
             ) {
 
-                lockButton.click();
+                if (
+                    !lockPreview.classList.contains(
+                        "hidden"
+                    )
+                ) {
+
+                    lockButton.click();
+                }
             }
         }
-    }
-);
+    );
 
 
-/* =========================================================
-   INITIAL
-========================================================= */
+    /* =====================================================
+       INITIALIZE
+    ===================================================== */
 
-loadChampionData();
+    console.log(
+        "LoL Draft Simulator 초기화 완료"
+    );
+
+
+    loadChampionData();
+
+});
 ```
