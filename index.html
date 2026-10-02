@@ -1,0 +1,82 @@
+```html
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LoL Ban Pick</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+
+    <header>
+        <h1>League of Legends</h1>
+        <h2>BAN / PICK</h2>
+    </header>
+
+    <div class="status">
+        <span id="phase">밴 페이즈</span>
+        <span id="turn">블루팀 차례</span>
+    </div>
+
+    <main>
+
+        <section class="team blue">
+            <h2>BLUE TEAM</h2>
+
+            <div class="bans">
+                <h3>BAN</h3>
+                <div id="blueBans" class="slots"></div>
+            </div>
+
+            <div class="picks">
+                <h3>PICK</h3>
+                <div id="bluePicks" class="slots"></div>
+            </div>
+        </section>
+
+        <section class="champions">
+
+            <div class="search">
+                <input
+                    type="text"
+                    id="search"
+                    placeholder="챔피언 검색..."
+                >
+            </div>
+
+            <div id="championList" class="champion-list"></div>
+
+        </section>
+
+        <section class="team red">
+            <h2>RED TEAM</h2>
+
+            <div class="bans">
+                <h3>BAN</h3>
+                <div id="redBans" class="slots"></div>
+            </div>
+
+            <div class="picks">
+                <h3>PICK</h3>
+                <div id="redPicks" class="slots"></div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <div class="controls">
+        <button id="undo">이전 단계</button>
+        <button id="reset">초기화</button>
+    </div>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
+```
