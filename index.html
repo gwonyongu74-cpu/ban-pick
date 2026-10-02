@@ -3,71 +3,261 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>League of Legends - Draft</title>
+    <title>LoL Draft Simulator</title>
 
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<div class="draft">
+<!-- =========================================================
+     SETUP
+========================================================= -->
 
-    <!-- =========================
-         TOP
-    ========================== -->
+<div id="setupScreen" class="screen">
 
-    <header class="top">
+    <div class="setup-box">
 
-        <div class="team-name blue-name">
-            BLUE SIDE
+        <div class="logo-title">
+            <span>LEAGUE OF LEGENDS</span>
+            <strong>DRAFT SIMULATOR</strong>
         </div>
 
-        <div class="match-info">
+        <div class="setup-grid">
 
-            <div class="game-title">
-                CHAMPION SELECT
+            <div class="team-setup blue-setup">
+
+                <h2>BLUE SIDE</h2>
+
+                <input
+                    id="blueTeamName"
+                    type="text"
+                    placeholder="Blue Team"
+                    maxlength="20"
+                >
+
+                <label class="logo-upload">
+                    <span id="blueLogoText">팀 로고 선택</span>
+                    <input
+                        id="blueLogo"
+                        type="file"
+                        accept="image/*"
+                    >
+                </label>
+
+                <img
+                    id="blueLogoPreview"
+                    class="setup-logo"
+                    hidden
+                >
+
             </div>
 
-            <div id="phase">
+
+            <div class="setup-options">
+
+                <h3>SERIES</h3>
+
+                <div class="option-row">
+
+                    <button
+                        class="series-button active"
+                        data-series="1"
+                    >
+                        BO1
+                    </button>
+
+                    <button
+                        class="series-button"
+                        data-series="3"
+                    >
+                        BO3
+                    </button>
+
+                    <button
+                        class="series-button"
+                        data-series="5"
+                    >
+                        BO5
+                    </button>
+
+                </div>
+
+
+                <h3>DRAFT MODE</h3>
+
+                <div class="draft-mode">
+
+                    <button
+                        id="standardMode"
+                        class="mode-button active"
+                    >
+                        <strong>STANDARD</strong>
+                        <small>일반 밴픽</small>
+                    </button>
+
+                    <button
+                        id="fearlessMode"
+                        class="mode-button"
+                    >
+                        <strong>FEARLESS</strong>
+                        <small>이전 게임 픽 금지</small>
+                    </button>
+
+                </div>
+
+
+                <div class="fearless-info">
+                    Fearless를 켜면 이전 게임에서 픽된 챔피언이
+                    다음 게임부터 양 팀 모두에게 금지됩니다.
+                </div>
+
+            </div>
+
+
+            <div class="team-setup red-setup">
+
+                <h2>RED SIDE</h2>
+
+                <input
+                    id="redTeamName"
+                    type="text"
+                    placeholder="Red Team"
+                    maxlength="20"
+                >
+
+                <label class="logo-upload">
+                    <span id="redLogoText">팀 로고 선택</span>
+                    <input
+                        id="redLogo"
+                        type="file"
+                        accept="image/*"
+                    >
+                </label>
+
+                <img
+                    id="redLogoPreview"
+                    class="setup-logo"
+                    hidden
+                >
+
+            </div>
+
+        </div>
+
+
+        <button
+            id="startDraft"
+            class="start-button"
+        >
+            DRAFT START
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     DRAFT
+========================================================= -->
+
+<div id="draftScreen" class="screen draft-screen hidden">
+
+    <!-- HEADER -->
+
+    <header class="draft-header">
+
+        <div class="header-team blue-header">
+
+            <img
+                id="blueHeaderLogo"
+                class="header-logo"
+                hidden
+            >
+
+            <div>
+                <small>BLUE SIDE</small>
+                <strong id="blueHeaderName">
+                    BLUE TEAM
+                </strong>
+            </div>
+
+        </div>
+
+
+        <div class="header-center">
+
+            <div class="series-label">
+                <span id="seriesLabel">GAME 1</span>
+            </div>
+
+            <div
+                id="phaseLabel"
+                class="phase-label"
+            >
                 BAN PHASE
             </div>
 
-            <div id="timer">
+            <div
+                id="timer"
+                class="timer"
+            >
                 30
             </div>
 
         </div>
 
-        <div class="team-name red-name">
-            RED SIDE
+
+        <div class="header-team red-header">
+
+            <div>
+                <small>RED SIDE</small>
+                <strong id="redHeaderName">
+                    RED TEAM
+                </strong>
+            </div>
+
+            <img
+                id="redHeaderLogo"
+                class="header-logo"
+                hidden
+            >
+
         </div>
 
     </header>
 
 
-    <!-- =========================
-         TEAM AREA
-    ========================== -->
+    <!-- DRAFT MAIN -->
 
-    <section class="teams">
+    <main class="draft-main">
 
-        <!-- BLUE -->
 
-        <div class="team blue-team">
+        <!-- BLUE TEAM -->
 
-            <div class="team-header">
-                <span>BLUE</span>
-                <span id="blueStatus">BAN</span>
+        <section class="team-panel blue-panel">
+
+            <div class="team-panel-header">
+
+                <div class="side-indicator blue-indicator"></div>
+
+                <span id="bluePanelName">
+                    BLUE TEAM
+                </span>
+
+                <span id="blueAction">
+                    BAN
+                </span>
+
             </div>
 
-            <div class="ban-row">
 
-                <div class="ban-title">
+            <div class="ban-section">
+
+                <div class="section-title">
                     BANS
                 </div>
 
@@ -78,59 +268,200 @@
 
             </div>
 
-            <div
-                id="bluePlayers"
-                class="players"
-            ></div>
 
-        </div>
+            <div
+                id="blueFearlessBans"
+                class="fearless-ban-section hidden"
+            >
+
+                <div class="section-title fearless-title">
+                    FEARLESS BANS
+                </div>
+
+                <div
+                    id="blueFearlessSlots"
+                    class="ban-slots"
+                ></div>
+
+            </div>
+
+
+            <div class="pick-section">
+
+                <div class="section-title">
+                    PICKS
+                </div>
+
+                <div
+                    id="bluePicks"
+                    class="pick-slots"
+                ></div>
+
+            </div>
+
+        </section>
 
 
         <!-- CENTER -->
 
-        <div class="center-area">
+        <section class="center-panel">
 
-            <div class="turn-indicator">
-                <span id="turnTeam">
-                    BLUE
-                </span>
+            <div class="turn-box">
 
-                <span id="turnAction">
-                    BAN
-                </span>
-            </div>
-
-            <div class="search">
-
-                <input
-                    id="search"
-                    type="text"
-                    placeholder="챔피언 검색"
-                    autocomplete="off"
+                <div
+                    id="turnSide"
+                    class="turn-side"
                 >
+                    BLUE SIDE
+                </div>
+
+                <div
+                    id="turnAction"
+                    class="turn-action"
+                >
+                    BAN
+                </div>
 
             </div>
+
 
             <div
-                id="champions"
-                class="champions"
-            ></div>
+                id="lockPreview"
+                class="lock-preview hidden"
+            >
 
-        </div>
+                <div class="preview-image-wrap">
 
+                    <img
+                        id="previewImage"
+                        src=""
+                        alt=""
+                    >
 
-        <!-- RED -->
+                </div>
 
-        <div class="team red-team">
+                <div
+                    id="previewName"
+                    class="preview-name"
+                >
+                    Champion
+                </div>
 
-            <div class="team-header">
-                <span>RED</span>
-                <span id="redStatus">BAN</span>
+                <div
+                    id="previewRole"
+                    class="preview-role"
+                >
+                    Assassin
+                </div>
+
+                <button
+                    id="lockButton"
+                    class="lock-button"
+                >
+                    LOCK IN
+                </button>
+
+                <button
+                    id="cancelButton"
+                    class="cancel-button"
+                >
+                    CANCEL
+                </button>
+
             </div>
 
-            <div class="ban-row">
 
-                <div class="ban-title">
+            <div
+                id="championBrowser"
+                class="champion-browser"
+            >
+
+                <div class="browser-tools">
+
+                    <input
+                        id="championSearch"
+                        type="text"
+                        placeholder="챔피언 검색..."
+                    >
+
+                    <select id="roleFilter">
+
+                        <option value="all">
+                            모든 역할
+                        </option>
+
+                        <option value="Fighter">
+                            Fighter
+                        </option>
+
+                        <option value="Tank">
+                            Tank
+                        </option>
+
+                        <option value="Mage">
+                            Mage
+                        </option>
+
+                        <option value="Assassin">
+                            Assassin
+                        </option>
+
+                        <option value="Marksman">
+                            Marksman
+                        </option>
+
+                        <option value="Support">
+                            Support
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div
+                    id="championGrid"
+                    class="champion-grid"
+                ></div>
+
+            </div>
+
+
+            <div
+                id="fearlessWarning"
+                class="fearless-warning hidden"
+            >
+                <strong>FEARLESS DRAFT</strong>
+                <span id="fearlessCount">
+                    0 champions unavailable
+                </span>
+            </div>
+
+        </section>
+
+
+        <!-- RED TEAM -->
+
+        <section class="team-panel red-panel">
+
+            <div class="team-panel-header">
+
+                <div class="side-indicator red-indicator"></div>
+
+                <span id="redPanelName">
+                    RED TEAM
+                </span>
+
+                <span id="redAction">
+                    BAN
+                </span>
+
+            </div>
+
+
+            <div class="ban-section">
+
+                <div class="section-title">
                     BANS
                 </div>
 
@@ -141,43 +472,182 @@
 
             </div>
 
+
             <div
-                id="redPlayers"
-                class="players"
-            ></div>
+                id="redFearlessBans"
+                class="fearless-ban-section hidden"
+            >
 
-        </div>
+                <div class="section-title fearless-title">
+                    FEARLESS BANS
+                </div>
 
-    </section>
+                <div
+                    id="redFearlessSlots"
+                    class="ban-slots"
+                ></div>
+
+            </div>
 
 
-    <!-- =========================
-         BOTTOM
-    ========================== -->
+            <div class="pick-section">
 
-    <footer class="bottom">
+                <div class="section-title">
+                    PICKS
+                </div>
 
-        <button id="undo">
+                <div
+                    id="redPicks"
+                    class="pick-slots"
+                ></div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- BOTTOM -->
+
+    <footer class="draft-footer">
+
+        <button
+            id="undoButton"
+            class="footer-button"
+        >
             UNDO
         </button>
 
-        <button id="reset">
-            RESET
-        </button>
-
         <div
-            id="message"
-            class="message"
+            id="draftMessage"
+            class="draft-message"
         >
             BLUE SIDE BAN
         </div>
+
+        <button
+            id="resetButton"
+            class="footer-button"
+        >
+            RESET
+        </button>
 
     </footer>
 
 </div>
 
 
-<script src="script.js"></script>
+<!-- =========================================================
+     FINAL SCREEN
+========================================================= -->
+
+<div
+    id="finalScreen"
+    class="screen final-screen hidden"
+>
+
+    <div class="final-box">
+
+        <div class="final-title">
+            DRAFT COMPLETE
+        </div>
+
+        <div
+            id="finalGameTitle"
+            class="final-game-title"
+        >
+            GAME 1
+        </div>
+
+
+        <div class="final-teams">
+
+            <div class="final-team">
+
+                <img
+                    id="finalBlueLogo"
+                    class="final-logo"
+                    hidden
+                >
+
+                <strong id="finalBlueName">
+                    BLUE TEAM
+                </strong>
+
+            </div>
+
+
+            <div class="vs">
+                VS
+            </div>
+
+
+            <div class="final-team">
+
+                <strong id="finalRedName">
+                    RED TEAM
+                </strong>
+
+                <img
+                    id="finalRedLogo"
+                    class="final-logo"
+                    hidden
+                >
+
+            </div>
+
+        </div>
+
+
+        <div class="final-draft">
+
+            <div>
+
+                <h3>BLUE PICKS</h3>
+
+                <div
+                    id="finalBluePicks"
+                    class="final-picks"
+                ></div>
+
+            </div>
+
+
+            <div>
+
+                <h3>RED PICKS</h3>
+
+                <div
+                    id="finalRedPicks"
+                    class="final-picks"
+                ></div>
+
+            </div>
+
+        </div>
+
+
+        <div
+            id="nextGameArea"
+            class="next-game-area"
+        >
+
+            <button
+                id="nextGameButton"
+                class="start-button"
+            >
+                NEXT GAME
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script src="app.js"></script>
 
 </body>
 </html>
